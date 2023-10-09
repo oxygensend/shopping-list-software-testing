@@ -20,6 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true, fluent = true)
+@ToString
 @Entity
 @Table(name = "app_user")
 public class User implements UserDetails {
