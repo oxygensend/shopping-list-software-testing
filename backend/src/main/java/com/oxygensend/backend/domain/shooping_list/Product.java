@@ -1,5 +1,6 @@
 package com.oxygensend.backend.domain.shooping_list;
 
+import com.oxygensend.backend.application.shopping_list.dto.ProductDto;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -11,10 +12,10 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@Accessors(chain = true, fluent = true)
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Accessors(chain = true, fluent = true)
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -26,4 +27,14 @@ public class Product {
     @Column
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    public Product(String name) {
+        this.name = name;
+    }
+
+
+    public static Product productDto(ProductDto dto) {
+        return new Product(dto.name());
+    }
+
 }

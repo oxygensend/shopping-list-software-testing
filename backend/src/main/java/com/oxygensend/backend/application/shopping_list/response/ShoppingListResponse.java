@@ -13,6 +13,7 @@ public record ShoppingListResponse(
         String name,
         boolean completed,
         Set<ListElementDto> products,
+        LocalDateTime dateOfExecution,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 
@@ -25,6 +26,7 @@ public record ShoppingListResponse(
                 shoppingList.name(),
                 shoppingList.completed(),
                 products,
+                shoppingList.dateOfExecution(),
                 shoppingList.createdAt(),
                 shoppingList.updatedAt()
         );

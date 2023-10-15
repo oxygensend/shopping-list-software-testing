@@ -9,7 +9,7 @@ public record ListElementDto(
         UUID id,
         String product,
         Grammar grammar,
-        int quantity,
+        float quantity,
         boolean completed
 ) {
     public static ListElementDto fromEntity(ListElement listElement) {

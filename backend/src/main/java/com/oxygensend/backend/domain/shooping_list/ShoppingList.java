@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -33,10 +34,13 @@ public class ShoppingList {
     private User user;
 
     @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<ListElement> listElements;
+    private Set<ListElement> listElements = new HashSet<>();
 
     @Column(nullable = false)
     private boolean completed = false;
+
+    @Column(nullable = true)
+    private String imageAttachmentFilename;
 
     @Column
     @CreationTimestamp
@@ -45,4 +49,15 @@ public class ShoppingList {
     @Column
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    private LocalDateTime dateOfExecution;
+
+    public void addListElement(ListElement element) {
+        if (listElements.contains(element)) {
+            return;
+        }
+
+        listElements.add(element);
+        element.shoppingList(this);
+    }
 }

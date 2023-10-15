@@ -23,7 +23,7 @@ public class ListElement {
     @JoinColumn(name = "shopping_list_id", nullable = false)
     private ShoppingList shoppingList;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
@@ -35,5 +35,5 @@ public class ListElement {
     private boolean completed = false;
 
     @Column(nullable = false)
-    private int quantity = 0;
+    private float quantity = 0;
 }

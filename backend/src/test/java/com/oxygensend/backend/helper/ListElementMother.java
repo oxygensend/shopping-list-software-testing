@@ -12,7 +12,7 @@ public final class ListElementMother {
     public static ListElement getRandom() {
         return ListElement.builder()
                 .id(UUID.randomUUID())
-                .grammar(Grammar.LITER)
+                .grammar(Grammar.L)
                 .completed(false)
                 .quantity(10)
                 .product(ProductMother.getRandom())
