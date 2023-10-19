@@ -48,7 +48,7 @@ describe('LoginForm', () => {
 
         // Assert
         await waitFor(() => {
-            expect(axios.post).toHaveBeenCalledWith(`${API_URL}/v1/auth/access_token`, {
+            expect(mockedAxios.post).toHaveBeenCalledWith(`${API_URL}/v1/auth/access_token`, {
                 email: 'test@example.com',
                 password: 'password123',
             });
