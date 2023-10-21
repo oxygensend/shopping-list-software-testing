@@ -1,5 +1,6 @@
 package com.oxygensend.backend.application.shopping_list.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.oxygensend.backend.application.shopping_list.dto.ListElementDto;
 import com.oxygensend.backend.domain.shooping_list.ShoppingList;
 
@@ -13,8 +14,11 @@ public record ShoppingListResponse(
         String name,
         boolean completed,
         Set<ListElementDto> products,
+        @JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
         LocalDateTime dateOfExecution,
+        @JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
         LocalDateTime createdAt,
+        @JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
         LocalDateTime updatedAt
 
 ) {

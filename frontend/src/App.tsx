@@ -5,6 +5,10 @@ import {ProtectedRoute} from "./components/ProtectedRoute";
 import {Register} from "./pages/register";
 import {Login} from "./pages/login";
 import {getAccessToken} from "./security/tokenStorage";
+import {ShoppingLists} from "./pages/shopping_lists";
+import {ShoppingList} from "./pages/shopping_list";
+
+
 
 function App() {
 
@@ -16,7 +20,7 @@ function App() {
                     path={''}
                     element={
                         <ProtectedRoute isAuthorized={isAuthorized} redirect={'login'}>
-                            <p>"XDD"</p>
+                            <ShoppingLists/>
                         </ProtectedRoute>
                     }
                 />
@@ -30,9 +34,17 @@ function App() {
                 <Route
                     path={'register'}
                     element={
-                    <ProtectedRoute isAuthorized={true} redirect={'/'}>
-                        <Register/>
-                    </ProtectedRoute>
+                        <ProtectedRoute isAuthorized={true} redirect={'/'}>
+                            <Register/>
+                        </ProtectedRoute>
+                    }/>
+
+                <Route
+                    path={'shopping-lists/:id'}
+                    element={
+                        <ProtectedRoute isAuthorized={isAuthorized} redirect={'login'}>
+                            <ShoppingList/>
+                        </ProtectedRoute>
                     }/>
             </Route>
         )

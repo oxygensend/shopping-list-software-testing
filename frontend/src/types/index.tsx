@@ -16,3 +16,27 @@ export type SubExceptionType = {
     object?: string;
     rejectedValue?: string;
 }
+
+export type ShoppingListPreview = {
+    id: string;
+    name: string;
+    completed: boolean;
+}
+
+export type ShoppingList = {
+    id: string;
+    name: string;
+    completed: boolean;
+    products: Product[];
+    dateOfExecution: Date;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export type Product = {
+    id: string;
+    product: string;
+    grammar: string;
+    quantity: number;
+    completed: boolean
+}

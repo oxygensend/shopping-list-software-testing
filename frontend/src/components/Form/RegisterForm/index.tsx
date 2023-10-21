@@ -15,7 +15,7 @@ export const RegisterForm = ({}) => {
     const [errors, setErrors] = useState<SubExceptionType[]>([]);
 
 
-    const onSubmit = async (body: any) => {
+    const onSubmit = async (body: FormValues) => {
         try {
             const {data} = await axios.post<RegisterResponse>(`${API_URL}/v1/auth/register`, body);
             setAccessToken(data.accessToken);
