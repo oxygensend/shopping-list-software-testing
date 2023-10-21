@@ -40,3 +40,9 @@ export type Product = {
     quantity: number;
     completed: boolean
 }
+
+export type ProductDto = {
+    product: string|null;
+    grammar: string;
+    quantity: number;
+}

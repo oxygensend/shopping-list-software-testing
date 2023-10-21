@@ -3,10 +3,10 @@ import {ErrorType} from "../../../types";
 
 export interface InputProps {
     name: string;
-    type: 'text' | 'number' | 'password' | 'date' | 'email';
+    type: 'text' | 'number' | 'password' | 'date' | 'email' | 'checkbox';
     label: string;
     required: boolean;
-    placeholder: string;
+    placeholder?: string;
     register: UseFormRegister<any>;
     className?: string;
     error?: string | null | ErrorType;
