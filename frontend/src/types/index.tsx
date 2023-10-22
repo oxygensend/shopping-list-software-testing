@@ -42,7 +42,15 @@ export type Product = {
 }
 
 export type ProductDto = {
-    product: string|null;
+    name: string|null;
     grammar: string;
     quantity: number;
 }
+export type AccessTokenPayload = {
+    username: string;
+    email: string;
+    name: string;
+    iat: number;
+    exp: number;
+    type: 'auth';
+};

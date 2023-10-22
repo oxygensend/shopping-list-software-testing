@@ -42,18 +42,18 @@ describe('ListElement component', () => {
     });
 
 
-    it('renders black bar when completed is false', () => {
+    it('renders black bar when completed is true', () => {
         // Act
-        const {container} = render(<ListElement {...listElementProps} completed={false}/>);
+        const {container} = render(<ListElement {...listElementProps} completed={true}/>);
         const blackBar = container.querySelector('.bg-black');
 
         // Assert
         expect(blackBar).toBeInTheDocument();
     });
 
-    it('does not render black bar when completed is true', () => {
+    it('does not render black bar when completed is false', () => {
         // Act
-        const {container} = render(<ListElement {...listElementProps} completed={true}/>);
+        const {container} = render(<ListElement {...listElementProps} completed={false}/>);
         const blackBar = container.querySelector('.bg-black');
 
         // Assert

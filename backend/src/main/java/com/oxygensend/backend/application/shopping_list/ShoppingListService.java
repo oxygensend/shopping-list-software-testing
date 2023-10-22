@@ -64,7 +64,7 @@ public class ShoppingListService {
     }
 
     @Transactional
-    public ShoppingListId createShoppingList(CreateShoppingListRequest request) {
+    public ShoppingListId createShoppingList(CreateShoppingListRequest request, MultipartFile attachmentImage) {
 
         var products = request.products();
         var existingProducts = getExistingProducts(products);
@@ -81,7 +81,7 @@ public class ShoppingListService {
             shoppingList.addListElement(listElement);
         }
 
-        storeAttachmentImage(request.attachmentImage(), shoppingList);
+        storeAttachmentImage(attachmentImage, shoppingList);
 
         entityManager.persist(shoppingList);
         entityManager.flush();

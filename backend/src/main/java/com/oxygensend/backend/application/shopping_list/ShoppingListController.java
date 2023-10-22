@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -41,15 +42,22 @@ public class ShoppingListController {
         return service.getAllPaginatedList(pageable);
     }
 
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
-    public ShoppingListId createShoppingList(@ModelAttribute @Validated CreateShoppingListRequest request) {
-        return service.createShoppingList(request);
+    public ShoppingListId createShoppingList(
+            @RequestPart @Validated CreateShoppingListRequest request,
+            @RequestPart(required = false) MultipartFile attachmentImage
+    ) {
+        return service.createShoppingList(request, attachmentImage);
     }
 
-    @PatchMapping("/{id}" )
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ShoppingListResponse createShoppingList(@PathVariable UUID id, @ModelAttribute @Validated UpdateShoppingListRequest request) {
+    public ShoppingListResponse updateShoppingList(
+            @PathVariable UUID id,
+            @RequestPart @Validated UpdateShoppingListRequest request,
+            @RequestPart(required = false) MultipartFile attachmentImage
+    ) {
         return service.updateShoppingList(id, request);
     }
 

@@ -3,7 +3,7 @@ import {ErrorType} from "../../../types";
 
 export interface InputProps {
     name: string;
-    type: 'text' | 'number' | 'password' | 'date' | 'email' | 'checkbox';
+    type: 'text' | 'number' | 'password' | 'date' | 'email' | 'checkbox' | 'datetime-local' | 'file';
     label: string;
     required: boolean;
     placeholder?: string;
@@ -13,4 +13,6 @@ export interface InputProps {
     width?: string;
     defaultValue?: string;
     step?: number;
+    onChange?: (e: any) => void;
+    accept?: string;
 }

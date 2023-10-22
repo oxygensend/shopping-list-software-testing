@@ -1,5 +1,5 @@
-import {AccessTokenPayload} from "./types";
 import jwtDecode from 'jwt-decode'
+import {AccessTokenPayload} from "../types";
 export const setAccessToken = (token: string) => {
     window.localStorage.setItem('accessToken', token);
 };

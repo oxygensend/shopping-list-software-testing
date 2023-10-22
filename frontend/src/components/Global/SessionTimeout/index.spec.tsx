@@ -4,7 +4,7 @@ import { SessionTimeout } from './index';
 import MockedFunction = jest.MockedFunction;
 import {getAccessToken, removeTokens} from "../../../security/tokenStorage";
 
-jest.mock('../../security/tokenStorage', () => ({
+jest.mock('../../../security/tokenStorage', () => ({
     getAccessToken: jest.fn(),
     removeTokens: jest.fn(),
 }));

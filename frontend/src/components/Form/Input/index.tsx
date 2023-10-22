@@ -13,10 +13,13 @@ export const Input = ({
                           width,
                           defaultValue,
                           step,
+                          onChange,
+                          accept
                       }: InputProps) => {
     return (
         <div className={`flex flex-col gap-1 ${width ? width : 'w-5/6'}`}>
-            <label htmlFor={name} className={'text-left font-semibold text-blue-50 ' + (error ? 'text-red-600' : 'text-blue-50')}>{label}</label>
+            <label htmlFor={name}
+                   className={'text-left font-semibold text-blue-50 ' + (error ? 'text-red-600' : 'text-blue-50')}>{label}</label>
             <input
                 id={name}
                 {...register(name)}
@@ -30,6 +33,8 @@ export const Input = ({
                     `py-2.5 px-0  bg-transparent border-0 border-b-2 appearance-none text-gray-400 border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer`
                 }
                 placeholder={placeholder}
+                {...(onChange && {onChange})}
+                {...(accept && {accept})}
             />
             {error && <Error error={error}/>}
         </div>

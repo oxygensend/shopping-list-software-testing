@@ -144,14 +144,14 @@ public class ShoppingListServiceTest {
         var file = mock(MultipartFile.class);
         var products = createProductsDto();
         var productNames = products.stream().map(ProductDto::name).collect(Collectors.toSet());
-        var request = new CreateShoppingListRequest("shopping_list", file, products, LocalDateTime.now());
+        var request = new CreateShoppingListRequest("shopping_list",  products, LocalDateTime.now());
 
         when(productRepository.findByNames(productNames)).thenReturn(List.of());
         when(storageService.store(file)).thenReturn("test.jpeg");
 
 
         // Act
-        var response = service.createShoppingList(request);
+        var response = service.createShoppingList(request, file);
 
         // Assert
         verify(storageService, times(1)).store(file);
@@ -167,14 +167,14 @@ public class ShoppingListServiceTest {
         var file = mock(MultipartFile.class);
         var products = createProductsDto();
         var productNames = products.stream().map(ProductDto::name).collect(Collectors.toSet());
-        var request = new CreateShoppingListRequest("shopping_list", file, products, LocalDateTime.now());
+        var request = new CreateShoppingListRequest("shopping_list",  products, LocalDateTime.now());
         var productEntities = products.stream().map(Product::productDto).toList();
 
         when(productRepository.findByNames(productNames)).thenReturn(productEntities);
         when(storageService.store(file)).thenReturn("test.jpeg");
 
         // Act
-        var response = service.createShoppingList(request);
+        var response = service.createShoppingList(request, file);
 
         // Assert
         verify(storageService, times(1)).store(file);
