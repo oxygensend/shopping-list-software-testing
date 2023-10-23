@@ -1,6 +1,8 @@
 package com.oxygensend.backend.application.shopping_list.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.oxygensend.backend.application.shopping_list.dto.ListElementDto;
 import com.oxygensend.backend.domain.shooping_list.ShoppingList;
 
@@ -16,10 +18,13 @@ public record ShoppingListResponse(
         String imageAttachmentFilename,
         Set<ListElementDto> products,
         @JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
         LocalDateTime dateOfExecution,
         @JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
         LocalDateTime createdAt,
         @JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
         LocalDateTime updatedAt
 
 ) {

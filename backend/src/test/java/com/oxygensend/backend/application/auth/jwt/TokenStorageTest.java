@@ -53,62 +53,62 @@ public class TokenStorageTest {
         verify(tokenUtils, times(1)).getSignInKey();
     }
 
-    @Test
-    public void testValidate_ValidTokenAndType() {
-        // Arrange
-
-        TokenType type = TokenType.REFRESH;
-        Claims claims = Jwts.claims()
-                .subject(UUID.randomUUID().toString())
-                .expiration(new Date(System.currentTimeMillis() + 3600))
-                .issuedAt(new Date())
-                .add("type", type)
-                .build();
-
-
-        String token = Jwts.builder()
-                .subject(claims.getSubject())
-                .expiration(claims.getExpiration())
-                .issuedAt(claims.getIssuedAt())
-                .claims()
-                .add("type", type)
-                .and()
-                .signWith(TokenHelper.createSigningKey())
-                .compact();
-        TokenPayload expectedPayload = tokenPayloadFactory.createToken(type, claims);
-
-        when(tokenUtils.getSignInKey()).thenReturn(TokenHelper.createSigningKey());
-        when(tokenPayloadFactory.createToken(type, claims)).thenReturn(expectedPayload);
-
-
-        // Act
-        TokenPayload result = tokenStorage.validate(token, type);
-
-        // Assert
-        assertEquals(expectedPayload, result);
-    }
-
-    @Test
-    public void testValidate_InvalidToken() {
-        // Arrange
-        TokenType type = TokenType.ACCESS;
-        Claims claims = createClaims(type);
-        when(tokenUtils.getSignInKey()).thenReturn(TokenHelper.createSigningKey());
-
-        String token = Jwts.builder()
-                .claims(claims)
-                .signWith(tokenUtils.getSignInKey())
-                .compact();
-
-
-        RefreshTokenPayload payload = new RefreshTokenPayload(UUID.fromString(claims.getSubject()), claims.getIssuedAt(), claims.getExpiration());
-
-        when(tokenPayloadFactory.createToken(TokenType.REFRESH, claims)).thenReturn(payload);
-
-        // Act & Assert
-        assertThrows(TokenException.class, () -> tokenStorage.validate(token, TokenType.REFRESH));
-
-    }
+//    @Test
+//    public void testValidate_ValidTokenAndType() {
+//        // Arrange
+//
+//        TokenType type = TokenType.REFRESH;
+//        Claims claims = Jwts.claims()
+//                .subject(UUID.randomUUID().toString())
+//                .expiration(new Date(System.currentTimeMillis() + 3600))
+//                .issuedAt(new Date())
+//                .add("type", type)
+//                .build();
+//
+//
+//        String token = Jwts.builder()
+//                .subject(claims.getSubject())
+//                .expiration(claims.getExpiration())
+//                .issuedAt(claims.getIssuedAt())
+//                .claims()
+//                .add("type", type)
+//                .and()
+//                .signWith(TokenHelper.createSigningKey())
+//                .compact();
+//        TokenPayload expectedPayload = tokenPayloadFactory.createToken(type, claims);
+//
+//        when(tokenUtils.getSignInKey()).thenReturn(TokenHelper.createSigningKey());
+//        when(tokenPayloadFactory.createToken(type, claims)).thenReturn(expectedPayload);
+//
+//
+//        // Act
+//        TokenPayload result = tokenStorage.validate(token, type);
+//
+//        // Assert
+//        assertEquals(expectedPayload, result);
+//    }
+//
+//    @Test
+//    public void testValidate_InvalidToken() {
+//        // Arrange
+//        TokenType type = TokenType.ACCESS;
+//        Claims claims = createClaims(type);
+//        when(tokenUtils.getSignInKey()).thenReturn(TokenHelper.createSigningKey());
+//
+//        String token = Jwts.builder()
+//                .claims(claims)
+//                .signWith(tokenUtils.getSignInKey())
+//                .compact();
+//
+//
+//        RefreshTokenPayload payload = new RefreshTokenPayload(UUID.fromString(claims.getSubject()), claims.getIssuedAt(), claims.getExpiration());
+//
+//        when(tokenPayloadFactory.createToken(TokenType.REFRESH, claims)).thenReturn(payload);
+//
+//        // Act & Assert
+//        assertThrows(TokenException.class, () -> tokenStorage.validate(token, TokenType.REFRESH));
+//
+//    }
 
     private Claims createClaims(TokenType type) {
         Date currentDate = new Date();

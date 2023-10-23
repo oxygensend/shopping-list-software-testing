@@ -19,9 +19,7 @@ export const ShoppingList = ({}) => {
     useEffect(() => {
         authAxios.get(`${API_URL}/v1/shopping-lists/${shoppingListId}`)
             .then((res) => {
-                console.log(res.data)
                 setShoppingList(res.data)
-                console.log(shoppingList)
             }).catch((e) => {
             console.log(e)
             throw new Error("Unhandled error: " + e)
