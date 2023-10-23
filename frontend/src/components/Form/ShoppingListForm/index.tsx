@@ -161,7 +161,7 @@ export const ShoppingListForm = ({request, shoppingList}: ShoppingListFormProps)
                 className={"text-white"}
                 error={findPropertyViolation(errors, 'attachmentImage')}
                 onChange={(e) => setSelectedImage(e.target.files?.item(0) ?? null)}
-                accept={'image/*'}
+                accept={'image/jpeg , image/png , image/jpg, image/webp'}
             />
 
             {selectedImage && <img src={URL.createObjectURL(selectedImage)} alt={'Image preview'} className={'w-44'}/>}

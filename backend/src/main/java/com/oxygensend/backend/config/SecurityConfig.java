@@ -30,6 +30,8 @@ public class SecurityConfig {
                                 .permitAll()
                                 .requestMatchers(HttpMethod.OPTIONS, "/api/v1/**")
                                 .permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/shopping-lists/attachment_image/**")
+                                .permitAll()
                                 .anyRequest()
                                 .authenticated())
                 .exceptionHandling(configurer -> configurer.authenticationEntryPoint(

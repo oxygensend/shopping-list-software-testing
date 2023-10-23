@@ -27,6 +27,7 @@ export type ShoppingList = {
     id: string;
     name: string;
     completed: boolean;
+    imageAttachmentFilename: string|null;
     products: Product[];
     dateOfExecution: Date;
     createdAt: Date;

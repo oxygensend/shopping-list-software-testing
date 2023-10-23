@@ -13,6 +13,7 @@ public record ShoppingListResponse(
         UUID id,
         String name,
         boolean completed,
+        String imageAttachmentFilename,
         Set<ListElementDto> products,
         @JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
         LocalDateTime dateOfExecution,
@@ -29,6 +30,7 @@ public record ShoppingListResponse(
                 shoppingList.id(),
                 shoppingList.name(),
                 shoppingList.completed(),
+                shoppingList.imageAttachmentFilename(),
                 products,
                 shoppingList.dateOfExecution(),
                 shoppingList.createdAt(),

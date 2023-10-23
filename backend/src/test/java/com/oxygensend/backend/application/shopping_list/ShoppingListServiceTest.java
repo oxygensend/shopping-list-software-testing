@@ -8,6 +8,7 @@ import com.oxygensend.backend.application.shopping_list.response.PagedListRespon
 import com.oxygensend.backend.application.shopping_list.response.ShoppingListId;
 import com.oxygensend.backend.application.shopping_list.response.ShoppingListPagedResponse;
 import com.oxygensend.backend.application.shopping_list.response.ShoppingListResponse;
+import com.oxygensend.backend.domain.auth.exception.StorageFileNotFoundException;
 import com.oxygensend.backend.infrastructure.storage.FileStorageService;
 import com.oxygensend.backend.domain.auth.User;
 import com.oxygensend.backend.domain.auth.exception.ShoppingListNotFoundException;
@@ -19,7 +20,6 @@ import com.oxygensend.backend.helper.UserMother;
 import com.oxygensend.backend.infrastructure.shopping_list.repository.ProductRepository;
 import com.oxygensend.backend.infrastructure.shopping_list.repository.ShoppingListRepository;
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -58,12 +58,6 @@ public class ShoppingListServiceTest {
     private final User user = UserMother.getRandom();
 
 
-    @BeforeEach
-    public void setUp() {
-        when(authentication.getAuthenticationPrinciple()).thenReturn(user);
-    }
-
-    //
     @Test
     public void test_GetPaginatedLists() {
         // Arrange
@@ -73,6 +67,7 @@ public class ShoppingListServiceTest {
         var shoppingListDtoLists = shoppingLists.stream().map(ShoppingListPagedResponse::fromEntity).toList();
         var expectedResponse = new PagedListResponse<ShoppingListPagedResponse>(shoppingListDtoLists, page.getNumberOfElements(), page.getTotalPages());
 
+        when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(shoppingListRepository.findAllByUser(pageable, user)).thenReturn(page);
 
         // Act
@@ -87,6 +82,7 @@ public class ShoppingListServiceTest {
     public void test_DeleteShoppingListSuccessfully() {
         // Arrange
         var shoppingList = ShoppingListMother.getRandom();
+        when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(shoppingListRepository.findByIdAndUser(shoppingList.id(), user)).thenReturn(Optional.of(shoppingList));
 
         // Act
@@ -102,6 +98,7 @@ public class ShoppingListServiceTest {
     public void test_DeleteShoppingListNotFound() {
         // Arrange
         var id = UUID.randomUUID();
+        when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(shoppingListRepository.findByIdAndUser(id, user)).thenThrow(new ShoppingListNotFoundException(id));
 
         //Act && Assert
@@ -114,6 +111,7 @@ public class ShoppingListServiceTest {
     public void test_GetShoppingListShouldThrowShoppingListNotFoundException() {
         // Arrange
         var id = UUID.randomUUID();
+        when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(shoppingListRepository.findByIdAndUser(id, user)).thenThrow(new ShoppingListNotFoundException(id));
 
         //Act && Assert
@@ -128,6 +126,7 @@ public class ShoppingListServiceTest {
         // Arrange
         var shoppingList = ShoppingListMother.getRandom();
         var expectedResponse = ShoppingListResponse.fromEntity(shoppingList);
+        when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(shoppingListRepository.findByIdAndUser(shoppingList.id(), user)).thenReturn(Optional.of(shoppingList));
 
         // Act
@@ -144,8 +143,9 @@ public class ShoppingListServiceTest {
         var file = mock(MultipartFile.class);
         var products = createProductsDto();
         var productNames = products.stream().map(ProductDto::name).collect(Collectors.toSet());
-        var request = new CreateShoppingListRequest("shopping_list",  products, LocalDateTime.now());
+        var request = new CreateShoppingListRequest("shopping_list", products, LocalDateTime.now());
 
+        when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(productRepository.findByNames(productNames)).thenReturn(List.of());
         when(storageService.store(file)).thenReturn("test.jpeg");
 
@@ -167,9 +167,10 @@ public class ShoppingListServiceTest {
         var file = mock(MultipartFile.class);
         var products = createProductsDto();
         var productNames = products.stream().map(ProductDto::name).collect(Collectors.toSet());
-        var request = new CreateShoppingListRequest("shopping_list",  products, LocalDateTime.now());
+        var request = new CreateShoppingListRequest("shopping_list", products, LocalDateTime.now());
         var productEntities = products.stream().map(Product::productDto).toList();
 
+        when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(productRepository.findByNames(productNames)).thenReturn(productEntities);
         when(storageService.store(file)).thenReturn("test.jpeg");
 
@@ -187,6 +188,8 @@ public class ShoppingListServiceTest {
     public void test_UpdateShoppingList_ShoppingListNotFound() {
         // Arrange
         var shoppingList = ShoppingListMother.getRandom();
+
+        when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(shoppingListRepository.findByIdAndUser(shoppingList.id(), user)).thenThrow(new ShoppingListNotFoundException(shoppingList.id()));
 
         //Act && Assert
@@ -199,6 +202,7 @@ public class ShoppingListServiceTest {
         // Arrange
         var shoppingList = ShoppingListMother.getRandom();
         var request = new UpdateShoppingListRequest("new_name", JsonNullable.undefined(), new ArrayList<>(), null, null);
+        when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(shoppingListRepository.findByIdAndUser(shoppingList.id(), user)).thenReturn(Optional.of(shoppingList));
 
         // Act
@@ -215,6 +219,7 @@ public class ShoppingListServiceTest {
         var shoppingList = ShoppingListMother.getRandom();
         var newDate = LocalDateTime.of(2024, 2, 2, 1, 1, 1);
         var request = new UpdateShoppingListRequest(null, JsonNullable.undefined(), new ArrayList<>(), newDate, null);
+        when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(shoppingListRepository.findByIdAndUser(shoppingList.id(), user)).thenReturn(Optional.of(shoppingList));
 
         // Act
@@ -230,6 +235,7 @@ public class ShoppingListServiceTest {
         // Arrange
         var shoppingList = ShoppingListMother.getRandom();
         var request = new UpdateShoppingListRequest(null, JsonNullable.undefined(), new ArrayList<>(), null, true);
+        when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(shoppingListRepository.findByIdAndUser(shoppingList.id(), user)).thenReturn(Optional.of(shoppingList));
 
         // Act
@@ -246,6 +252,7 @@ public class ShoppingListServiceTest {
         var shoppingList = ShoppingListMother.getRandom();
         var products = createProductsDto();
         var request = new UpdateShoppingListRequest(null, JsonNullable.undefined(), products, null, null);
+        when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(shoppingListRepository.findByIdAndUser(shoppingList.id(), user)).thenReturn(Optional.of(shoppingList));
 
         // Act
@@ -266,6 +273,7 @@ public class ShoppingListServiceTest {
         var oldFilename = shoppingList.imageAttachmentFilename();
         var mockFile = mock(MultipartFile.class);
         var request = new UpdateShoppingListRequest(null, mockFile, new ArrayList<>(), null, null);
+        when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(shoppingListRepository.findByIdAndUser(shoppingList.id(), user)).thenReturn(Optional.of(shoppingList));
         when(storageService.store(mockFile)).thenReturn("new_test.jpeg");
 
@@ -279,6 +287,31 @@ public class ShoppingListServiceTest {
         assertInstanceOf(ShoppingListResponse.class, response);
     }
 
+    @Test
+    void test_LoadImageAttachment_throwExceptionFileNotFound() {
+        // Arrange
+        var filename = "test.jpeg";
+        when(storageService.load(filename)).thenReturn(null);
+
+        // Act && Assert
+        assertThrows(StorageFileNotFoundException.class, () -> service.loadAttachmentImage(filename));
+        verify(storageService, times(1)).load(filename);
+
+    }
+
+    @Test
+    void test_LoadImageAttachment_returnResource() {
+        // Arrange
+        var filename = "test.jpeg";
+        var resource = mock(org.springframework.core.io.Resource.class);
+        when(storageService.load(filename)).thenReturn(resource);
+
+        // Act
+        var response = service.loadAttachmentImage(filename);
+
+        // Assert
+        assertEquals(resource, response);
+    }
 
     private List<ProductDto> createProductsDto() {
         var products = new ArrayList<ProductDto>();

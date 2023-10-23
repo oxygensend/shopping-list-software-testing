@@ -58,7 +58,10 @@ export const ShoppingList = ({}) => {
                             <ShoppingListInfo field={"Status"} text={shoppingList.completed ? "Executed" : "Waiting"}/>
                             <ShoppingListInfo field={"Updated at"} text={shoppingList.updatedAt.toString()}/>
                             <ShoppingListInfo field={"Created at"} text={shoppingList.createdAt.toString()}/>
-                            <ShoppingListInfo field={"Date of Execution"} text={shoppingList.dateOfExecution?.toString()}/>
+                            <ShoppingListInfo field={"Date of Execution"}
+                                              text={shoppingList.dateOfExecution?.toString()}/>
+
+
                         </div>
                         <div className={"flex flex-row gap-6"}>
                             <Button
@@ -82,10 +85,20 @@ export const ShoppingList = ({}) => {
                     <div className={"lg:col-start-7 lg:col-end-12 w-3/4 lg:w-full justify-center"}>
                         <ProductsList products={shoppingList.products}/>
                     </div>
+
+                    <div className={"col-start-2 col-end-6"}>
+                        <img
+                            src={`${API_URL}/v1/shopping-lists/attachment_image/${shoppingList.imageAttachmentFilename}`}
+                            alt={shoppingList.name}
+                            className={"w-full"}
+                        />
+                    </div>
+
                     <Modal isOpen={isEditShoppingListModalOpen}
-                                              onClose={() => setIsEditShoppingListModalOpen(false)}
-                                              title={"Create new shopping list"}>
-                        <ShoppingListForm request={() => {}} shoppingList={shoppingList}/>
+                           onClose={() => setIsEditShoppingListModalOpen(false)}
+                           title={"Create new shopping list"}>
+                        <ShoppingListForm request={() => {
+                        }} shoppingList={shoppingList}/>
                     </Modal>
                 </div>
             </Layout>

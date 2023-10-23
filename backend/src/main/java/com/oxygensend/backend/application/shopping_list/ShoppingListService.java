@@ -11,6 +11,7 @@ import com.oxygensend.backend.application.shopping_list.response.ShoppingListRes
 import com.oxygensend.backend.application.storage.StorageService;
 import com.oxygensend.backend.domain.auth.User;
 import com.oxygensend.backend.domain.auth.exception.ShoppingListNotFoundException;
+import com.oxygensend.backend.domain.auth.exception.StorageFileNotFoundException;
 import com.oxygensend.backend.domain.shooping_list.ListElement;
 import com.oxygensend.backend.domain.shooping_list.Product;
 import com.oxygensend.backend.domain.shooping_list.ShoppingList;
@@ -19,6 +20,7 @@ import com.oxygensend.backend.infrastructure.shopping_list.repository.ProductRep
 import com.oxygensend.backend.infrastructure.shopping_list.repository.ShoppingListRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -125,6 +127,15 @@ public class ShoppingListService {
         entityManager.flush();
 
         return ShoppingListResponse.fromEntity(shoppingList);
+    }
+
+    public Resource loadAttachmentImage(String filename) {
+        var resource = storageService.load(filename);
+        if (resource == null) {
+            throw new StorageFileNotFoundException("File not found: " + filename);
+        }
+
+        return resource;
     }
 
     private void storeAttachmentImage(MultipartFile image, ShoppingList shoppingList) {

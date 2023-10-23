@@ -7,6 +7,7 @@ import com.oxygensend.backend.application.shopping_list.response.ShoppingListId;
 import com.oxygensend.backend.application.shopping_list.response.ShoppingListPagedResponse;
 import com.oxygensend.backend.application.shopping_list.response.ShoppingListResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -61,5 +62,10 @@ public class ShoppingListController {
         return service.updateShoppingList(id, request);
     }
 
+    @GetMapping("/attachment_image/{filename:.+}")
+    @ResponseStatus(HttpStatus.OK)
+    public Resource getImage(@PathVariable String filename) {
+        return service.loadAttachmentImage(filename);
+    }
 
 }
