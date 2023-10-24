@@ -15,6 +15,7 @@ export const ShoppingList = ({}) => {
     const shoppingListId = params.id as string;
     const [shoppingList, setShoppingList] = useState<ShoppingListType>();
     const [isEditShoppingListModalOpen, setIsEditShoppingListModalOpen] = useState<boolean>(false);
+    const [reset, setReset] = useState<boolean>(false);
 
     useEffect(() => {
         authAxios.get(`${API_URL}/v1/shopping-lists/${shoppingListId}`)
@@ -25,7 +26,7 @@ export const ShoppingList = ({}) => {
             throw new Error("Unhandled error: " + e)
         })
 
-    }, []);
+    }, [reset, setReset]);
 
     const onClickDeleteHandler = () => {
         if (!window.confirm("Are you sure you want to delete this shopping list?")) return
@@ -42,6 +43,17 @@ export const ShoppingList = ({}) => {
     const onClickEditHandler = () => {
         console.log("Edit")
         setIsEditShoppingListModalOpen(true);
+    }
+
+    const editShoppingListRequest = async (body: any) => {
+        const {data} = await authAxios.patch<any>(`${API_URL}/v1/shopping-lists/${shoppingListId}`, body, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+
+        setIsEditShoppingListModalOpen(false);
+        setReset(true);
     }
 
     if (shoppingList) {
@@ -95,8 +107,7 @@ export const ShoppingList = ({}) => {
                     <Modal isOpen={isEditShoppingListModalOpen}
                            onClose={() => setIsEditShoppingListModalOpen(false)}
                            title={"Create new shopping list"}>
-                        <ShoppingListForm request={() => {
-                        }} shoppingList={shoppingList}/>
+                        <ShoppingListForm request={editShoppingListRequest} shoppingList={shoppingList}/>
                     </Modal>
                 </div>
             </Layout>

@@ -38,7 +38,6 @@ public class ApiExceptionHandlerTest {
 
         // Assert
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        // Add more assertions as needed
     }
 
     @Test
@@ -56,7 +55,6 @@ public class ApiExceptionHandlerTest {
 
         // Assert
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        // Add more assertions as needed
     }
 
     @Test
@@ -75,7 +73,6 @@ public class ApiExceptionHandlerTest {
 
         // Assert
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        // Add more assertions as needed
     }
 
     @Test
@@ -88,6 +85,5 @@ public class ApiExceptionHandlerTest {
 
         // Assert
         assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
-        // Add more assertions as needed
     }
 }

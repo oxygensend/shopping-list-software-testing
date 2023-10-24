@@ -21,6 +21,7 @@ type FormValues = {
     products: ProductDto[];
     dateOfExecution: Date;
     attachmentImage: any;
+    completed?: boolean;
 }
 
 export const ShoppingListForm = ({request, shoppingList}: ShoppingListFormProps) => {
@@ -43,7 +44,8 @@ export const ShoppingListForm = ({request, shoppingList}: ShoppingListFormProps)
                     reset({
                         name: shoppingList.name,
                         dateOfExecution: shoppingList.dateOfExecution,
-                        products: shoppingList.products
+                        products: shoppingList.products,
+                        completed: shoppingList.completed
                     });
 
                     setNewProducts(mapListProductToListProductDto(shoppingList.products));
@@ -69,9 +71,10 @@ export const ShoppingListForm = ({request, shoppingList}: ShoppingListFormProps)
             body.products = newProducts;
             form.append('request', new Blob([JSON.stringify(body)], {type: 'application/json'}));
 
-            console.log(body.dateOfExecution)
+            console.log(form, newProducts)
             await request(form);
         } catch (err: any) {
+            console.log(err)
             if (err.response.status === 400) {
                 const response: ExceptionType = err.response.data;
                 setErrors(response.subExceptions);
@@ -116,6 +119,8 @@ export const ShoppingListForm = ({request, shoppingList}: ShoppingListFormProps)
             quantity: quantity,
             grammar: grammar
         };
+        console.log(newProducts);
+        setNewProducts([...newProducts]);
     }
 
     const removeProduct = (index: number) => {
@@ -165,6 +170,24 @@ export const ShoppingListForm = ({request, shoppingList}: ShoppingListFormProps)
             />
 
             {selectedImage && <img src={URL.createObjectURL(selectedImage)} alt={'Image preview'} className={'w-44'}/>}
+            {!selectedImage && shoppingList?.imageAttachmentFilename && <img
+                src={`${API_URL}/v1/shopping-lists/attachment_image/${shoppingList.imageAttachmentFilename}`}
+                alt={'Image preview'} className={'w-44'}
+            />
+            }
+
+            {shoppingList &&
+                <Input
+                    name={'completed'}
+                    type={'checkbox'}
+                    label={'Completed'}
+                    required={false}
+                    register={register}
+                    width={'w-1/3'}
+                    className={`py-2.5 px-0  text-gray-400 border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 w-4 h-4`}
+                />
+            }
+
 
             {
                 findPropertyViolation(errors, 'products') &&

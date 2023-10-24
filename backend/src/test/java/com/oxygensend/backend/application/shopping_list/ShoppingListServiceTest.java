@@ -9,6 +9,7 @@ import com.oxygensend.backend.application.shopping_list.response.ShoppingListId;
 import com.oxygensend.backend.application.shopping_list.response.ShoppingListPagedResponse;
 import com.oxygensend.backend.application.shopping_list.response.ShoppingListResponse;
 import com.oxygensend.backend.domain.auth.exception.StorageFileNotFoundException;
+import com.oxygensend.backend.domain.shooping_list.ListElement;
 import com.oxygensend.backend.infrastructure.storage.FileStorageService;
 import com.oxygensend.backend.domain.auth.User;
 import com.oxygensend.backend.domain.auth.exception.ShoppingListNotFoundException;
@@ -193,7 +194,7 @@ public class ShoppingListServiceTest {
         when(shoppingListRepository.findByIdAndUser(shoppingList.id(), user)).thenThrow(new ShoppingListNotFoundException(shoppingList.id()));
 
         //Act && Assert
-        assertThrows(ShoppingListNotFoundException.class, () -> service.updateShoppingList(shoppingList.id(), null));
+        assertThrows(ShoppingListNotFoundException.class, () -> service.updateShoppingList(shoppingList.id(), null, null));
         verify(shoppingListRepository, times(1)).findByIdAndUser(shoppingList.id(), user);
     }
 
@@ -201,12 +202,12 @@ public class ShoppingListServiceTest {
     public void test_UpdateShoppingList_ValidNameChange() {
         // Arrange
         var shoppingList = ShoppingListMother.getRandom();
-        var request = new UpdateShoppingListRequest("new_name", JsonNullable.undefined(), new ArrayList<>(), null, null);
+        var request = new UpdateShoppingListRequest("new_name", new ArrayList<>(), null, null);
         when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(shoppingListRepository.findByIdAndUser(shoppingList.id(), user)).thenReturn(Optional.of(shoppingList));
 
         // Act
-        var response = service.updateShoppingList(shoppingList.id(), request);
+        var response = service.updateShoppingList(shoppingList.id(), request, null);
 
         // Assert
         assertEquals(shoppingList.name(), "new_name");
@@ -218,12 +219,12 @@ public class ShoppingListServiceTest {
         // Arrange
         var shoppingList = ShoppingListMother.getRandom();
         var newDate = LocalDateTime.of(2024, 2, 2, 1, 1, 1);
-        var request = new UpdateShoppingListRequest(null, JsonNullable.undefined(), new ArrayList<>(), newDate, null);
+        var request = new UpdateShoppingListRequest(null, new ArrayList<>(), newDate, null);
         when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(shoppingListRepository.findByIdAndUser(shoppingList.id(), user)).thenReturn(Optional.of(shoppingList));
 
         // Act
-        var response = service.updateShoppingList(shoppingList.id(), request);
+        var response = service.updateShoppingList(shoppingList.id(), request, null);
 
         // Assert
         assertEquals(newDate, shoppingList.dateOfExecution());
@@ -234,12 +235,12 @@ public class ShoppingListServiceTest {
     public void test_UpdateShoppingList_ValidCompletedChange() {
         // Arrange
         var shoppingList = ShoppingListMother.getRandom();
-        var request = new UpdateShoppingListRequest(null, JsonNullable.undefined(), new ArrayList<>(), null, true);
+        var request = new UpdateShoppingListRequest(null, new ArrayList<>(), null, true);
         when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(shoppingListRepository.findByIdAndUser(shoppingList.id(), user)).thenReturn(Optional.of(shoppingList));
 
         // Act
-        var response = service.updateShoppingList(shoppingList.id(), request);
+        var response = service.updateShoppingList(shoppingList.id(), request, null);
 
         // Assert
         assertTrue(shoppingList.completed());
@@ -250,16 +251,18 @@ public class ShoppingListServiceTest {
     void test_UpdateShoppingList_ValidProductsChange() {
         // Arrange
         var shoppingList = ShoppingListMother.getRandom();
+        var size = shoppingList.listElements().size();
         var products = createProductsDto();
-        var request = new UpdateShoppingListRequest(null, JsonNullable.undefined(), products, null, null);
+        var request = new UpdateShoppingListRequest(null, products, null, null);
         when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(shoppingListRepository.findByIdAndUser(shoppingList.id(), user)).thenReturn(Optional.of(shoppingList));
 
         // Act
-        var response = service.updateShoppingList(shoppingList.id(), request);
+        var response = service.updateShoppingList(shoppingList.id(), request, null);
         var returnedProducts = response.products().stream().map(l -> new ProductDto(l.product(), l.grammar(), l.quantity())).toList();
 
         // Assert
+        verify(entityManager, times(size)).remove(any(ListElement.class));
         assertEquals(products.size(), returnedProducts.size());
         assertTrue(products.containsAll(returnedProducts));
         assertTrue(returnedProducts.containsAll(products));
@@ -272,13 +275,13 @@ public class ShoppingListServiceTest {
         var shoppingList = ShoppingListMother.getRandom();
         var oldFilename = shoppingList.imageAttachmentFilename();
         var mockFile = mock(MultipartFile.class);
-        var request = new UpdateShoppingListRequest(null, mockFile, new ArrayList<>(), null, null);
+        var request = new UpdateShoppingListRequest(null, new ArrayList<>(), null, null);
         when(authentication.getAuthenticationPrinciple()).thenReturn(user);
         when(shoppingListRepository.findByIdAndUser(shoppingList.id(), user)).thenReturn(Optional.of(shoppingList));
         when(storageService.store(mockFile)).thenReturn("new_test.jpeg");
 
         // Act
-        var response = service.updateShoppingList(shoppingList.id(), request);
+        var response = service.updateShoppingList(shoppingList.id(), request, mockFile);
 
         // Assert
         verify(storageService, times(1)).store(mockFile);

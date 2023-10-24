@@ -92,7 +92,7 @@ public class ShoppingListService {
     }
 
     @Transactional
-    public ShoppingListResponse updateShoppingList(UUID id, UpdateShoppingListRequest request) {
+    public ShoppingListResponse updateShoppingList(UUID id, UpdateShoppingListRequest request, MultipartFile attachmentImage) {
         var shoppingList = shoppingListRepository.findByIdAndUser(id, getUser())
                                                  .orElseThrow(() -> new ShoppingListNotFoundException(id));
 
@@ -113,14 +113,22 @@ public class ShoppingListService {
             var existingProducts = getExistingProducts(request.products());
             for (var productDto : request.products()) {
                 var listElement = createListElement(productDto, existingProducts);
+                listElement.shoppingList(shoppingList);
                 listElements.add(listElement);
             }
+
+            for (var listElement : shoppingList.listElements()) {
+                if (!listElements.contains(listElement)) {
+                    entityManager.remove(listElement);
+                }
+            }
+
             shoppingList.listElements(listElements);
         }
 
-        if (JsonNullableWrapper.isPresent(request.attachmentFile())) {
+        if (attachmentImage != null) {
             var oldFilename = shoppingList.imageAttachmentFilename();
-            storeAttachmentImage(JsonNullableWrapper.unwrap(request.attachmentFile()), shoppingList);
+            storeAttachmentImage(attachmentImage, shoppingList);
             storageService.delete(oldFilename);
         }
 

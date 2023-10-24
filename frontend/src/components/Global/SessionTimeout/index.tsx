@@ -56,6 +56,7 @@ export const SessionTimeout = () => {
             if (minPast === maxTime) {
                 clearInterval(warningInactiveInterval.current);
                 sessionStorage.removeItem('lastTimeStamp');
+                window.location.href = '/login';
                 removeTokens();
             }
         }, 1000);

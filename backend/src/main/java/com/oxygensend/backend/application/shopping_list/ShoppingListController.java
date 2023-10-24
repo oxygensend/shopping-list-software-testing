@@ -52,14 +52,14 @@ public class ShoppingListController {
         return service.createShoppingList(request, attachmentImage);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping(value = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.OK)
     public ShoppingListResponse updateShoppingList(
             @PathVariable UUID id,
             @RequestPart @Validated UpdateShoppingListRequest request,
             @RequestPart(required = false) MultipartFile attachmentImage
     ) {
-        return service.updateShoppingList(id, request);
+        return service.updateShoppingList(id, request, attachmentImage);
     }
 
     @GetMapping("/attachment_image/{filename:.+}")

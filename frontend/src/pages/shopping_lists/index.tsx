@@ -46,7 +46,6 @@ export const ShoppingLists = ({}) => {
         setReset(true);
     }
 
-    console.log(shoppingLists)
     if (shoppingLists) {
 
         return (
