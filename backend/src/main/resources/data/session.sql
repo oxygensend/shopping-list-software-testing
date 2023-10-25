@@ -1,0 +1,1 @@
+insert into session values('96d7d1cf-1854-4fa7-9234-6936d1c29a36');

@@ -25,18 +25,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    public ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         String error = "Malformed JSON request";
         return buildResponseEntity(new ExceptionResponse(HttpStatus.BAD_REQUEST,  error, ex));
     }
 
     @ExceptionHandler(ApiException.class)
-    protected ResponseEntity<Object> handleCustomException(ApiException ex) {
+    public ResponseEntity<Object> handleCustomException(ApiException ex) {
         return buildResponseEntity(new ExceptionResponse(ex.getStatusCode(), ex.getMessage()));
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         ExceptionResponse apiException = new ExceptionResponse(HttpStatus.BAD_REQUEST, "Validation error", ex);
         apiException.addValidationErrors(ex.getBindingResult().getFieldErrors());
         apiException.addValidationException(ex.getBindingResult().getGlobalErrors());
@@ -44,7 +44,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    protected ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException ex) {
+    public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException ex) {
         return buildResponseEntity(new ExceptionResponse(HttpStatus.UNAUTHORIZED, ex.getMessage()));
     }
 
