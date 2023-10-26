@@ -4,3 +4,6 @@ jwt:
   authExpirationMs: 3600000
   refreshExpirationMs: 86400000
 
+spring:
+  jpa:
+    show-sql: false

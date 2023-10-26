@@ -1,4 +1,4 @@
-package com.oxygensend.backend.integration.product;
+package com.oxygensend.backend.integration;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;

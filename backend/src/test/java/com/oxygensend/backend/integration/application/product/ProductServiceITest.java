@@ -1,8 +1,9 @@
-package com.oxygensend.backend.integration.product;
+package com.oxygensend.backend.integration.application.product;
 
 import com.oxygensend.backend.application.product.ProductService;
 import com.oxygensend.backend.application.product.dto.ProductsResponse;
 import com.oxygensend.backend.domain.shooping_list.Grammar;
+import com.oxygensend.backend.integration.BaseITest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;

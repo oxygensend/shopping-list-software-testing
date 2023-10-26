@@ -1,7 +1,7 @@
 insert into shopping_list (id, completed, created_at, date_of_execution, image_attachment_filename, name,
                            updated_at, user_id)
 values ('96d7d1cf-1854-4fa7-9234-6936d1c29a36', false, '2023-01-01 00:00:00', '2023-01-01 00:00:00', null,
-        'Monday shopping list', '20203-01-01 00:00:00', '96d7d1cf-1854-4fa7-9234-6936d1c29a36');
+        'Monday shopping list', '2023-01-01 00:00:00', '96d7d1cf-1854-4fa7-9234-6936d1c29a36');
 insert into shopping_list (id, completed, created_at, date_of_execution, image_attachment_filename, name,
                            updated_at, user_id)
 values ('cef182c2-dab3-4bc8-a3ff-8f87a3e2f7d9', true, '2023-05-01 00:00:00', '2023-05-01 00:00:00', null,
