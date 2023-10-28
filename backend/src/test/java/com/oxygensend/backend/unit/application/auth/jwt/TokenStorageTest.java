@@ -3,6 +3,7 @@ package com.oxygensend.backend.unit.application.auth.jwt;
 import com.oxygensend.backend.application.auth.jwt.TokenStorage;
 import com.oxygensend.backend.application.auth.jwt.factory.TokenPayloadFactoryProvider;
 import com.oxygensend.backend.application.auth.jwt.payload.RefreshTokenPayload;
+import com.oxygensend.backend.application.auth.jwt.payload.TokenPayload;
 import com.oxygensend.backend.config.TokenConfiguration;
 import com.oxygensend.backend.domain.auth.TokenType;
 import com.oxygensend.backend.helper.TokenHelper;
@@ -51,81 +52,48 @@ public class TokenStorageTest {
         verify(tokenUtils, times(1)).getSignInKey();
     }
 
-//    @Test
-//    public void testValidate_ValidTokenAndType() {
-//        // Arrange
-//
-//        TokenType type = TokenType.REFRESH;
-//        Claims claims = Jwts.claims()
-//                .subject(UUID.randomUUID().toString())
-//                .expiration(new Date(System.currentTimeMillis() + 3600))
-//                .issuedAt(new Date())
-//                .add("type", type)
-//                .build();
-//
-//
-//        String token = Jwts.builder()
-//                .subject(claims.getSubject())
-//                .expiration(claims.getExpiration())
-//                .issuedAt(claims.getIssuedAt())
-//                .claims()
-//                .add("type", type)
-//                .and()
-//                .signWith(TokenHelper.createSigningKey())
-//                .compact();
-//        TokenPayload expectedPayload = tokenPayloadFactory.createToken(type, claims);
-//
-//        when(tokenUtils.getSignInKey()).thenReturn(TokenHelper.createSigningKey());
-//        when(tokenPayloadFactory.createToken(type, claims)).thenReturn(expectedPayload);
-//
-//
-//        // Act
-//        TokenPayload result = tokenStorage.validate(token, type);
-//
-//        // Assert
-//        assertEquals(expectedPayload, result);
-//    }
-//
-//    @Test
-//    public void testValidate_InvalidToken() {
-//        // Arrange
-//        TokenType type = TokenType.ACCESS;
-//        Claims claims = createClaims(type);
-//        when(tokenUtils.getSignInKey()).thenReturn(TokenHelper.createSigningKey());
-//
-//        String token = Jwts.builder()
-//                .claims(claims)
-//                .signWith(tokenUtils.getSignInKey())
-//                .compact();
-//
-//
-//        RefreshTokenPayload payload = new RefreshTokenPayload(UUID.fromString(claims.getSubject()), claims.getIssuedAt(), claims.getExpiration());
-//
-//        when(tokenPayloadFactory.createToken(TokenType.REFRESH, claims)).thenReturn(payload);
-//
-//        // Act & Assert
-//        assertThrows(TokenException.class, () -> tokenStorage.validate(token, TokenType.REFRESH));
-//
-//    }
+    @Test
+    public void testValidate_ValidTokenAndType() {
+        // Arrange
 
-    private Claims createClaims(TokenType type) {
-        Date currentDate = new Date();
-        Date expDate = new Date(System.currentTimeMillis() + 3600);
-
-        return Jwts.claims()
+        TokenType type = TokenType.REFRESH;
+        Claims claims = Jwts.claims()
                 .subject(UUID.randomUUID().toString())
-                .expiration(expDate)
-                .issuedAt(currentDate)
+                .expiration(new Date(System.currentTimeMillis() + 3600))
+                .issuedAt(new Date())
                 .add("type", type)
                 .build();
+
+
+        String token = Jwts.builder()
+                .subject(claims.getSubject())
+                .expiration(claims.getExpiration())
+                .issuedAt(claims.getIssuedAt())
+                .claims()
+                .add("type", type)
+                .and()
+                .signWith(TokenHelper.createSigningKey())
+                .compact();
+        TokenPayload expectedPayload = new RefreshTokenPayload(UUID.fromString(claims.getSubject()), claims.getIssuedAt(), claims.getExpiration());
+
+        when(tokenUtils.getSignInKey()).thenReturn(TokenHelper.createSigningKey());
+        when(tokenPayloadFactory.createToken(any(TokenType.class), any(Claims.class))).thenReturn(expectedPayload);
+
+
+        // Act
+        TokenPayload result = tokenStorage.validate(token, type);
+
+        // Assert
+        assertEquals(expectedPayload, result);
     }
+
 
     @TestConfiguration
     static class TestConfig {
         @Bean
         public TokenConfiguration tokenConfiguration() {
             TokenConfiguration config = new TokenConfiguration();
-            config.secretKey = "mock_secret_key";
+            config.secretKey = "614E645267556B58703273357638792F413F4428472B4B6250655368566D597133743677397A244326452948404D635166546A576E5A7234753778214125442A";
             config.authExpirationMs = 3600000;
             config.refreshExpirationMs = 86400000;
             return config;

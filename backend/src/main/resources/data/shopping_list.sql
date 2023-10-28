@@ -1,6 +1,6 @@
 insert into shopping_list (id, completed, created_at, date_of_execution, image_attachment_filename, name,
                            updated_at, user_id)
-values ('96d7d1cf-1854-4fa7-9234-6936d1c29a36', false, '2023-01-01 00:00:00', '2023-01-01 00:00:00', null,
+values ('96d7d1cf-1854-4fa7-9234-6936d1c29a36', false, '2023-01-01 00:00:00', '2023-01-01 00:00:00', 'test.jpg',
         'Monday shopping list', '2023-01-01 00:00:00', '96d7d1cf-1854-4fa7-9234-6936d1c29a36');
 insert into shopping_list (id, completed, created_at, date_of_execution, image_attachment_filename, name,
                            updated_at, user_id)

@@ -7,6 +7,7 @@ import com.oxygensend.backend.application.shopping_list.request.UpdateShoppingLi
 import com.oxygensend.backend.application.shopping_list.response.PagedListResponse;
 import com.oxygensend.backend.application.shopping_list.response.ShoppingListPagedResponse;
 import com.oxygensend.backend.application.shopping_list.response.ShoppingListResponse;
+import com.oxygensend.backend.application.storage.StorageProperties;
 import com.oxygensend.backend.domain.auth.exception.ShoppingListNotFoundException;
 import com.oxygensend.backend.domain.auth.exception.StorageFileNotFoundException;
 import com.oxygensend.backend.domain.shooping_list.Grammar;
@@ -21,15 +22,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,6 +52,9 @@ public class ShoppingListServiceITest extends BaseITest {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private StorageProperties storageProperties;
 
     private List<ShoppingList> shoppingLists;
 
@@ -221,26 +229,33 @@ public class ShoppingListServiceITest extends BaseITest {
         );
     }
 
-//    @Test
-//    void test_UpdateShoppingList_ValidImageChange() {
-//        // Arrange
-//        var shoppingList = ShoppingListMother.getRandom();
-//        var oldFilename = shoppingList.imageAttachmentFilename();
-//        var mockFile = mock(MultipartFile.class);
-//        var request = new UpdateShoppingListRequest(null, new ArrayList<>(), null, null);
-//        when(authentication.getAuthenticationPrinciple()).thenReturn(user);
-//        when(shoppingListRepository.findByIdAndUser(shoppingList.id(), user)).thenReturn(Optional.of(shoppingList));
-//        when(storageService.store(mockFile)).thenReturn("new_test.jpeg");
-//
-//        // Act
-//        var response = service.updateShoppingList(shoppingList.id(), request, mockFile);
-//
-//        // Assert
-//        verify(storageService, times(1)).store(mockFile);
-//        verify(storageService, times(1)).delete(oldFilename);
-//        assertEquals("new_test.jpeg", shoppingList.imageAttachmentFilename());
-//        assertInstanceOf(ShoppingListResponse.class, response);
-//    }
+    @Test
+    void test_UpdateShoppingList_ValidImageChange() throws IOException {
+
+        // Arrange
+        var shoppingList = shoppingLists.get(0);
+        Files.createDirectories(Paths.get(storageProperties.fullShoppingListLocation()));
+
+        var oldFilename = shoppingList.imageAttachmentFilename();
+        File file = new File(storageProperties.fullShoppingListLocation() + '/' + oldFilename);
+        file.createNewFile();
+
+        MockMultipartFile attachmentImage = new MockMultipartFile("attachmentImage", "new_test.jpg", MediaType.IMAGE_JPEG_VALUE, "image data".getBytes());
+        var request = new UpdateShoppingListRequest("test", new ArrayList<>(), LocalDateTime.now(), false);
+
+        // Act
+        var response = service.updateShoppingList(shoppingList.id(), request, attachmentImage);
+
+
+        var shoppingListAfterTest = shoppingListRepository.findById(response.id()).orElseThrow();
+        var filePath = storageProperties.fullShoppingListLocation() + "/" + response.imageAttachmentFilename();
+        // Assert
+        assertInstanceOf(ShoppingListResponse.class, response);
+        assertTrue(Files.exists(Paths.get(filePath)));
+        assertNotEquals(shoppingListAfterTest.imageAttachmentFilename(), oldFilename);
+
+        FileUtils.deleteDirectory(Paths.get(storageProperties.getRootLocation()).toFile());
+    }
 
     @Test
     void test_LoadImageAttachment_throwExceptionFileNotFound() {
@@ -248,19 +263,23 @@ public class ShoppingListServiceITest extends BaseITest {
 
     }
 
-//    @Test
-//    void test_LoadImageAttachment_returnResource() {
-//        // Arrange
-//        var filename = "test.jpeg";
-//        var resource = mock(org.springframework.core.io.Resource.class);
-//        when(storageService.load(filename)).thenReturn(resource);
-//
-//        // Act
-//        var response = service.loadAttachmentImage(filename);
-//
-//        // Assert
-//        assertEquals(resource, response);
-//    }
+    @Test
+    void test_LoadImageAttachment_returnResource() throws IOException {
+        // Arrange
+        var shoppingList = shoppingLists.get(0);
+        Files.createDirectories(Paths.get(storageProperties.fullShoppingListLocation()));
+
+        var filename = shoppingList.imageAttachmentFilename();
+        File file = new File(storageProperties.fullShoppingListLocation() + '/' + filename);
+        file.createNewFile();
+
+        // Act
+        var response = service.loadAttachmentImage(filename);
+
+        // Assert
+        assertInstanceOf(org.springframework.core.io.Resource.class, response);
+        FileUtils.deleteDirectory(Paths.get(storageProperties.getRootLocation()).toFile());
+    }
 
     private List<ProductDto> createProductsDto() {
         var products = new ArrayList<ProductDto>();

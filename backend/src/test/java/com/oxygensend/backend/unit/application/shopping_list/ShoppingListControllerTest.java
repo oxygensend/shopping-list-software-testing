@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @ExtendWith(MockitoExtension.class)
-public class ShoppingControllerTest {
+public class ShoppingListControllerTest {
 
     @InjectMocks
     private ShoppingListController controller;
