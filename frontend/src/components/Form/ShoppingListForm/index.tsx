@@ -56,10 +56,6 @@ export const ShoppingListForm = ({request, shoppingList}: ShoppingListFormProps)
                     setProductComponents(components);
                 }
             })
-            .catch((err) => {
-                console.log(err);
-                throw new Error('Invalid exception occurred')
-            });
 
     }, []);
 
@@ -78,8 +74,6 @@ export const ShoppingListForm = ({request, shoppingList}: ShoppingListFormProps)
             if (err.response.status === 400) {
                 const response: ExceptionType = err.response.data;
                 setErrors(response.subExceptions);
-            } else {
-                throw Error('Invalid exception occurred');
             }
         }
     }

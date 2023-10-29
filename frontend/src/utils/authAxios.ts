@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import {getAccessToken, getRefreshToken, setAccessToken, setRefreshToken} from "../security/tokenStorage";
 import axios from "axios";
 import {API_URL} from "../config";

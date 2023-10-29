@@ -54,38 +54,70 @@ describe('ShoppingList Component', () => {
         });
     });
 
-    // it('calls delete endpoint when delete button is clicked', async () => {
-    //     // Arrange
-    //     mockAuthAxios.delete.mockResolvedValueOnce({});
-    //
-    //     const originalAlert = window.alert;
-    //     const alertMock = jest.fn();
-    //     window.alert = alertMock;
-    //
-    //     render(<ShoppingList/>);
-    //
-    //     // Act
-    //     await waitFor(() => {
-    //         fireEvent.click(screen.getByText('Delete'));
-    //     });
-    //
-    //     // Assert
-    //     await waitFor(() => {
-    //         expect(alertMock).toHaveBeenCalledWith('Are you sure you want to delete this shopping list?');
-    //     })
-    // });
-    //
-    // it('opens edit modal when edit button is clicked', async () => {
-    //
-    //     // Act
-    //     render(<ShoppingList/>);
-    //     await waitFor(() => {
-    //         fireEvent.click(screen.getByText('Edit'));
-    //     });
-    //
-    //     // Assert
-    //     await waitFor(() => {
-    //         expect(screen.getByText('Create new shopping list')).toBeInTheDocument();
-    //     })
-    // });
+    it('fetches shopping list data and renders correctly', async () => {
+
+        render(<ShoppingList/>);
+
+        await waitFor(() => {
+            expect(screen.getByText(shoppingListData.name)).toBeInTheDocument();
+        });
+    });
+
+
+    it('calls window confirm when delete button is clicked', async () => {
+        // Arrange
+        mockAuthAxios.delete.mockResolvedValueOnce({});
+
+        const alertMock = jest.spyOn(window, 'confirm').mockImplementation();
+        render(<ShoppingList/>);
+
+        // Act
+        await waitFor(() => {
+            fireEvent.click(screen.getByText('Delete'));
+        });
+
+        // Assert
+        await waitFor(() => {
+            expect(alertMock).toHaveBeenCalledTimes(1);
+        })
+    });
+
+    it('calls delete endpoint when delete button is clicked', async () => {
+        // Arrange
+        mockAuthAxios.delete.mockResolvedValueOnce({});
+
+        const alertMock = jest.spyOn(window, 'confirm').mockReturnValueOnce(true);
+        render(<ShoppingList/>);
+
+        // Act
+        await waitFor(() => {
+            fireEvent.click(screen.getByText('Delete'));
+        });
+
+        // Assert
+        await waitFor(() => {
+            expect(mockAuthAxios.delete).toHaveBeenCalledTimes(1);
+        })
+    });
+
+    it('opens edit modal when edit button is clicked', async () => {
+
+        // Act
+        render(
+            <ShoppingList/>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByTestId('edit-button')).toBeInTheDocument();
+            const button = screen.getByTestId('edit-button');
+            fireEvent.doubleClick(button);
+        })
+
+        // Assert
+        await waitFor(() => {
+            expect(screen.getByTestId('t').children.length).toEqual(3)
+
+        })
+    });
+
 });

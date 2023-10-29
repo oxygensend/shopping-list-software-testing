@@ -63,6 +63,7 @@ export const Modal = ({ isOpen, onClose, title, children,  order }: ModalProps) 
 
     return (
         <div
+            data-testid={'modal-wrapper'}
             className={`modal-wrapper fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center overflow justify-center z-${
                 order ?? '40'
             }`}

@@ -1,5 +1,5 @@
 import {setAccessToken, setRefreshToken} from "../../../security/tokenStorage";
-import {fireEvent, render, waitFor} from "@testing-library/react";
+import {act, fireEvent, render, waitFor, screen} from "@testing-library/react";
 import axios from "axios";
 import {API_URL} from "../../../config";
 import React from "react";
@@ -12,7 +12,7 @@ jest.mock("../../../security/tokenStorage", () => ({
 }));
 
 describe('LoginForm', () => {
-    let mockSetAccessToken =  setAccessToken;
+    let mockSetAccessToken = setAccessToken;
     let mockSetRefreshToken = setRefreshToken;
     const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -79,4 +79,34 @@ describe('LoginForm', () => {
         const errorMessage = await findByText('Invalid credentials');
         expect(errorMessage).toBeInTheDocument();
     });
+
+    it('should display error message on failed login attempt', async () => {
+        const errorMessage = 'Invalid credentials';
+        const axiosPostSpy = jest.spyOn(axios, 'post').mockRejectedValueOnce({
+            response: {
+                status: 401,
+                data: {
+                    message: errorMessage,
+                },
+            },
+        });
+
+        render(<LoginForm/>)
+
+        fireEvent.change(screen.getByLabelText('Email'), {target: {value: 'test@example.com'}});
+        fireEvent.change(screen.getByLabelText('Password'), {target: {value: 'password123'}});
+
+        act(() => {
+            fireEvent.submit(screen.getByRole('button', {name: /Sign in/i}));
+        });
+
+        await waitFor(() => {
+            expect(axiosPostSpy).toHaveBeenCalledWith(expect.any(String), {
+                email: 'test@example.com',
+                password: 'password123',
+            });
+            expect(screen.getByText(errorMessage)).toBeInTheDocument();
+        });
+    });
+
 });

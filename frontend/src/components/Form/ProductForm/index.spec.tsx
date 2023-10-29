@@ -90,5 +90,82 @@ describe('ProductForm', () => {
         expect(mockRemoveProduct).toHaveBeenCalledWith(0);
     });
 
+    it('should update product state on input change', () => {
+        const saveProductMock = jest.fn();
+        render(
+            <ProductForm
+                products={['Product1', 'Product2']}
+                grammarNames={['L', 'M']}
+                saveProduct={saveProductMock}
+                removeProduct={jest.fn()}
+                index={0}
+            />
+        );
+
+        const productInput = screen.getByPlaceholderText('Product') as HTMLInputElement;
+        fireEvent.change(productInput, { target: { value: 'Product1' } });
+
+        expect(productInput.value).toBe('product1');
+        expect(saveProductMock).toHaveBeenCalledWith(0, 'product1', 0, 'L');
+    });
+
+    it('should display search results on input change', async () => {
+        render(
+            <ProductForm
+                products={['Product1', 'Product2']}
+                grammarNames={['L', 'M']}
+                saveProduct={jest.fn()}
+                removeProduct={jest.fn()}
+                index={0}
+            />
+        );
+
+        const productInput = screen.getByPlaceholderText('Product');
+        fireEvent.change(productInput, { target: { value: 'Product' } });
+
+        const searchResults = await screen.findAllByRole('listitem');
+        expect(searchResults).toHaveLength(2);
+    });
+
+    it('should update quantity state on input change', () => {
+        const saveProductMock = jest.fn();
+        render(
+            <ProductForm
+                products={['Product1', 'Product2']}
+                grammarNames={['L', 'M']}
+                saveProduct={saveProductMock}
+                removeProduct={jest.fn()}
+                index={0}
+            />
+        );
+
+        const quantityInput = screen.getByPlaceholderText('Quantity') as HTMLInputElement;
+        fireEvent.change(quantityInput, { target: { value: 10 } });
+
+        expect(quantityInput.value).toBe("10");
+        expect(saveProductMock).toHaveBeenCalledWith(0, '', "10", 'L');
+    });
+    //
+
+    it('should update grammar state on select change', () => {
+        const saveProductMock = jest.fn();
+        render(
+            <ProductForm
+                products={['Product1', 'Product2']}
+                grammarNames={['L', 'M']}
+                saveProduct={saveProductMock}
+                removeProduct={jest.fn()}
+                index={0}
+            />
+        );
+
+        const grammarSelect = screen.getByRole('combobox') as HTMLSelectElement;
+        fireEvent.change(grammarSelect, { target: { value: 'M' } });
+
+        expect(grammarSelect.value).toBe('M');
+        expect(saveProductMock).toHaveBeenCalledWith(0, '', 0, 'M');
+    });
+
+
 
 });

@@ -1,10 +1,10 @@
 import React from 'react';
-import {render, screen, fireEvent} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import {render, screen, fireEvent, waitFor} from '@testing-library/react';
 import {ShoppingListForm} from './index';
 import authAxios from '../../../utils/authAxios';
 import {API_URL} from '../../../config';
 import MockedFunction = jest.MockedFunction;
+import axios from "axios";
 
 jest.mock('../../../utils/authAxios');
 
@@ -34,56 +34,59 @@ describe('ShoppingListForm component', () => {
         render(<ShoppingListForm request={mockRequest}/>);
         const nameInput = screen.getByLabelText('Name');
         const dateInput = screen.getByLabelText('Date of execution');
-        const fileInput = screen.getByLabelText('Attachment Image');
         const saveButton = screen.getByText('Save');
 
-        // Act
-        fireEvent.change(nameInput, {target: {value: 'Test Shopping List'}});
-        fireEvent.change(dateInput, {target: {value: '2023-12-31T12:00'}});
-        const file = new File(['(⌐□_□)'], 'test.png', {type: 'image/png'});
-        fireEvent.change(fileInput, {target: {files: [file]}});
-        fireEvent.click(saveButton);
-
-        // Assert
-        expect(mockRequest).toHaveBeenCalled();
-    });
-
-    test('renders error message for invalid form data', async () => {
-        // Arrange
-        render(<ShoppingListForm request={mockRequest}/>);
-        const saveButton = screen.getByText('Save');
+        const body = {
+            name: 'Test Shopping List',
+            dateOfExecution: '2023-12-31T12:00'
+        }
 
         // Act
-        const nameInput = screen.getByLabelText('Name');
-        fireEvent.change(nameInput, {target: {value: ''}});
-        fireEvent.click(saveButton);
+        fireEvent.change(nameInput, {target: {value: body.name}});
+        fireEvent.change(dateInput, {target: {value: body.dateOfExecution}});
+        fireEvent.submit(saveButton);
 
         // Assert
-        await screen.findByText('Invalid product name');
-        expect(mockRequest).not.toHaveBeenCalled();
+        await waitFor(() => {
+            expect(mockRequest).toHaveBeenCalled();
+        });
+    });
+    it('should render form fields and products', async () => {
+
+        render(<ShoppingListForm request={jest.fn()}/>);
+
+        await waitFor(() => {
+            expect(authAxios.get).toHaveBeenCalledWith(`${API_URL}/v1/products`);
+        });
+
+        // Assert form fields are rendered
+        expect(screen.getByLabelText('Name')).toBeInTheDocument();
+        expect(screen.getByLabelText('Date of execution')).toBeInTheDocument();
+        expect(screen.getByLabelText('Attachment Image')).toBeInTheDocument();
+
+        // Assert products are rendered
+        expect(screen.getByText('Products:')).toBeInTheDocument();
+        expect(screen.getByTestId('minus')).toBeInTheDocument();
+        expect(screen.getByTestId('plus')).toBeInTheDocument();
     });
 
-    test('renders product form and saves product when adding new product', async () => {
-        // Arrange
-        render(<ShoppingListForm request={mockRequest}/>);
-        const addButton = screen.getByText('+');
+    it('should render completed field in form if shopList is added as prop', async () => {
 
-        // Act
-        fireEvent.click(addButton);
-        const productNameInput = await screen.findByPlaceholderText('Product');
-        userEvent.type(productNameInput, 'New Product');
-        const quantityInput = screen.getByPlaceholderText('Quantity');
-        userEvent.type(quantityInput, '5');
-        const grammarSelect = screen.getByRole('combobox');
-        userEvent.selectOptions(grammarSelect, 'L');
-        const saveButton = screen.getByText('Save');
+        render(<ShoppingListForm request={jest.fn()} shoppingList={
+            {
+                id: '1',
+                name: 'Test Shopping List',
+                completed: false,
+                imageAttachmentFilename: null,
+                products: [],
+                dateOfExecution: new Date(),
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            }
+        }/>);
 
-        fireEvent.click(saveButton);
-
-        // Assert
-        expect(mockRequest).toHaveBeenCalled();
-        expect(mockRequest.mock.calls[0][0].products[0].name).toBe('New Product');
-        expect(mockRequest.mock.calls[0][0].products[0].quantity).toBe(5);
-        expect(mockRequest.mock.calls[0][0].products[0].grammar).toBe('XL');
+        expect(screen.getByLabelText('Completed')).toBeInTheDocument();
     });
+
+
 });

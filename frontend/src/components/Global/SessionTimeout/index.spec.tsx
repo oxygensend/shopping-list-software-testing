@@ -36,25 +36,6 @@ describe('SessionTimeout component', () => {
         expect(removeTokens).not.toHaveBeenCalled();
     });
 
-    // it('should log out if user is authenticated and inactive for 15 minutes', async () => {
-    //     // Arrange
-    //     mockGetAccessToken.mockReturnValue('fakeAccessToken');
-    //
-    //     // Act
-    //     render(<SessionTimeout />);
-    //
-    //     sessionStorage.setItem('lastTimeStamp', '2021-01-01T00:00:00.000Z');
-    //     // Wait for async operations inside useEffect to complete
-    //     await act(async () => {
-    //         // Simulate user inactivity for 15 minutes
-    //         jest.advanceTimersByTime(900000); // 900000 ms (15 minutes)
-    //         await waitFor(() => expect(removeTokens).toHaveBeenCalled());
-    //     });
-    //
-    //     // Assert
-    //     expect(getAccessToken).toHaveBeenCalled();
-    //     expect(removeTokens).toHaveBeenCalled();
-    // });
 
     it('should not log out if user is not authenticated', () => {
         // Arrange

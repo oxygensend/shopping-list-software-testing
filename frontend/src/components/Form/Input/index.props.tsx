@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import {UseFormRegister} from "react-hook-form";
 import {ErrorType} from "../../../types";
 

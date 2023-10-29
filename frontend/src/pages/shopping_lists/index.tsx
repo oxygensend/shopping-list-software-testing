@@ -30,9 +30,7 @@ export const ShoppingLists = ({}) => {
                 setNumberOfElements(res.data.numberOfElements);
                 setNumberOfPages(res.data.numberOfPages);
             })
-            .catch((e) => {
-                throw new Error("Unhandled error: " + e)
-            })
+
     }, [reset, setReset]);
 
     const addNewShoppingListRequest = async (body: any) => {

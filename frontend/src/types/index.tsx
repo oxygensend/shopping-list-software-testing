@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 export type  ErrorType = {
     [value: string]: string;
 }

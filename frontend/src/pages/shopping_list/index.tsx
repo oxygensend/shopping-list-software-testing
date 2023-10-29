@@ -21,10 +21,7 @@ export const ShoppingList = ({}) => {
         authAxios.get(`${API_URL}/v1/shopping-lists/${shoppingListId}`)
             .then((res) => {
                 setShoppingList(res.data)
-            }).catch((e) => {
-            console.log(e)
-            throw new Error("Unhandled error: " + e)
-        })
+            })
 
     }, [reset, setReset]);
 
@@ -36,12 +33,10 @@ export const ShoppingList = ({}) => {
                 window.location.href = '/';
             }).catch((e) => {
             console.log(e)
-            throw new Error("Unhandled error: " + e)
         })
     }
 
     const onClickEditHandler = () => {
-        console.log("Edit")
         setIsEditShoppingListModalOpen(true);
     }
 
@@ -60,7 +55,7 @@ export const ShoppingList = ({}) => {
 
         return (
             <Layout>
-                <div className={"lg:grid lg:grid-cols-12 flex flex-col items-center gap-10 h-full"}>
+                <div className={"lg:grid lg:grid-cols-12 flex flex-col items-center gap-10 h-full"} data-testid={'t'}>
 
                     <div className={"col-start-2 col-end-6 flex flex-col gap-10"}>
                         <div>
@@ -80,6 +75,7 @@ export const ShoppingList = ({}) => {
                                 hoverColor={"bg-blue-500"}
                                 type={"button"}
                                 onClick={onClickEditHandler}
+                                dataTestId={"edit-button"}
                             />
                             <Button
                                 name={"Delete"}

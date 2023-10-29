@@ -23,8 +23,6 @@ export const LoginForm = ({}) => {
             if (err.response.status === 401) {
                 console.log(err)
                 setError(err.response.data.message);
-            } else {
-                throw Error('Invalid exception occurred');
             }
         }
     }

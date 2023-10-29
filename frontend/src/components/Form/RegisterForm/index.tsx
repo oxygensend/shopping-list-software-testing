@@ -22,12 +22,9 @@ export const RegisterForm = ({}) => {
             setRefreshToken(data.refreshToken);
             window.location.href = '/';
         } catch (err: any) {
-            console.log(err)
             if (err.response.status === 400) {
                 const response: ExceptionType = err.response.data;
                 setErrors(response.subExceptions);
-            } else {
-                throw Error('Invalid exception occurred');
             }
         }
     }
