@@ -105,6 +105,7 @@ export const ProductForm = ({
                 onChange={onChangeQuantityHandler}
             />
             <select
+
                 value={grammar}
                 onChange={onChangeGrammarHandler}
                 className={`py-2.5 px-0  bg-transparent w-1/6 border-0 border-b-2 appearance-none text-gray-400 border-gray-700  disabled:text-amber-50 focus:outline-none focus:ring-0 focus:border-gray-200 peer`}

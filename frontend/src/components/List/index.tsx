@@ -8,7 +8,8 @@ export interface ListProps {
 export const List = ({shoppingLists, parentClass}: ListProps) => {
 
     return (
-        <div className={"flex flex-col gap-2 rounded-md bg-yellow-400 h-full overflow-y-auto  " + parentClass}>
+        <div
+            className={"flex flex-col gap-2 rounded-md bg-yellow-400 h-full overflow-y-auto  " + parentClass}>
             {shoppingLists?.map((shoppingList, i) => {
                 return (
                         <ListElement

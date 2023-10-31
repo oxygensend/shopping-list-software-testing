@@ -17,7 +17,9 @@ export const Input = ({
                           accept
                       }: InputProps) => {
     return (
-        <div className={`flex flex-col gap-1 ${width ? width : 'w-5/6'}`}>
+        <div
+            data-testid={name}
+            className={`flex flex-col gap-1 ${width ? width : 'w-5/6'}`}>
             <label htmlFor={name}
                    className={'text-left font-semibold text-blue-50 ' + (error ? 'text-red-600' : 'text-blue-50')}>{label}</label>
             <input

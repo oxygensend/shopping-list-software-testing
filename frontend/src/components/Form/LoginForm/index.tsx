@@ -28,7 +28,9 @@ export const LoginForm = ({}) => {
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className={"flex flex-col gap-2 items-center"}>
+        <form
+            data-testid={'login-form'}
+            onSubmit={handleSubmit(onSubmit)} className={"flex flex-col gap-2 items-center"}>
             <Input
                 name={'email'}
                 label={'Email'}

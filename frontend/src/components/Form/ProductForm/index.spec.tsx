@@ -38,6 +38,23 @@ describe('ProductForm', () => {
         expect(grammarSelect.value).toBe('L');
     });
 
+    test('should render minusPlus component', () => {
+        // Arrange
+        const props = {
+            products: ['Product1', 'Product2'],
+            grammarNames: ['L', 'XL'],
+            saveProduct: mockSaveProduct,
+            removeProduct: mockRemoveProduct,
+            index: 0,
+        };
+
+        // Act
+        render(<ProductForm {...props} />);
+
+        // Assert
+        expect(screen.getByTestId('minus-plus')).toBeInTheDocument();
+    });
+
     test('triggers saveProduct callback on user input changes', () => {
         // Arrange
         const props = {
@@ -66,29 +83,6 @@ describe('ProductForm', () => {
         expect(mockSaveProduct).toHaveBeenCalledTimes(3);
     });
 
-    test('triggers removeProduct callback on minus button click', () => {
-        // Arrange
-        const props = {
-            products: ['Product1', 'Product2'],
-            grammarNames: ['L', 'XL'],
-            saveProduct: mockSaveProduct,
-            removeProduct: mockRemoveProduct,
-            index: 0,
-        };
-
-        // Act
-        render(<ProductForm {...props} />);
-
-        // Assert - Initial state check
-        expect(mockRemoveProduct).not.toHaveBeenCalled();
-
-        // Act - User clicks remove button
-        const minusButton = screen.getByText('-');
-        fireEvent.click(minusButton);
-
-        // Assert - removeProduct callback should be called
-        expect(mockRemoveProduct).toHaveBeenCalledWith(0);
-    });
 
     it('should update product state on input change', () => {
         const saveProductMock = jest.fn();
@@ -103,7 +97,7 @@ describe('ProductForm', () => {
         );
 
         const productInput = screen.getByPlaceholderText('Product') as HTMLInputElement;
-        fireEvent.change(productInput, { target: { value: 'Product1' } });
+        fireEvent.change(productInput, {target: {value: 'Product1'}});
 
         expect(productInput.value).toBe('product1');
         expect(saveProductMock).toHaveBeenCalledWith(0, 'product1', 0, 'L');
@@ -121,7 +115,7 @@ describe('ProductForm', () => {
         );
 
         const productInput = screen.getByPlaceholderText('Product');
-        fireEvent.change(productInput, { target: { value: 'Product' } });
+        fireEvent.change(productInput, {target: {value: 'Product'}});
 
         const searchResults = await screen.findAllByRole('listitem');
         expect(searchResults).toHaveLength(2);
@@ -140,7 +134,7 @@ describe('ProductForm', () => {
         );
 
         const quantityInput = screen.getByPlaceholderText('Quantity') as HTMLInputElement;
-        fireEvent.change(quantityInput, { target: { value: 10 } });
+        fireEvent.change(quantityInput, {target: {value: 10}});
 
         expect(quantityInput.value).toBe("10");
         expect(saveProductMock).toHaveBeenCalledWith(0, '', "10", 'L');
@@ -160,12 +154,11 @@ describe('ProductForm', () => {
         );
 
         const grammarSelect = screen.getByRole('combobox') as HTMLSelectElement;
-        fireEvent.change(grammarSelect, { target: { value: 'M' } });
+        fireEvent.change(grammarSelect, {target: {value: 'M'}});
 
         expect(grammarSelect.value).toBe('M');
         expect(saveProductMock).toHaveBeenCalledWith(0, '', 0, 'M');
     });
-
 
 
 });

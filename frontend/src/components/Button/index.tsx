@@ -11,7 +11,7 @@ export const Button = ({name, color, hoverColor, onClick, type, additionalClass,
 
     return (
         <button
-            data-testid={dataTestId}
+            data-testid={dataTestId ?? 'button'}
             type={type}
             onClick={onClick}
             className={`hover:${hoverColor} ${color} text-gray-50 rounded p-3 lg:h-12 lg:w-40 w-52 ${additionalClass}`}>

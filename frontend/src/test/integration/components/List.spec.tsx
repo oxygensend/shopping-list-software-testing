@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { ShoppingListPreview } from '../../types';
-import {List} from "./index";
+import {List} from "../../../components/List";
 
 describe('List Component', () => {
 
@@ -10,7 +10,7 @@ describe('List Component', () => {
         { id: '2', name: 'Shopping List 2', completed: true },
     ];
 
-    it('renders ElementList components properly', () => {
+    it('renders shopping lists correctly', () => {
         // Arrange
         const parentClass = 'custom-parent-class';
 
@@ -21,6 +21,12 @@ describe('List Component', () => {
         const listElements = getAllByTestId('list-element');
         expect(listElements).toHaveLength(mockShoppingLists.length);
 
+        listElements.forEach((element, index) => {
+            expect(element).toHaveTextContent(mockShoppingLists[index].name);
+        });
+
+        const parentContainer = document.querySelector('.custom-parent-class');
+        expect(parentContainer).toBeInTheDocument();
     });
 
     it('renders nothing when shoppingLists prop is empty', () => {

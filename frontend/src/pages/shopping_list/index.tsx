@@ -31,9 +31,7 @@ export const ShoppingList = ({}) => {
         authAxios.delete(`${API_URL}/v1/shopping-lists/${shoppingListId}`)
             .then((res) => {
                 window.location.href = '/';
-            }).catch((e) => {
-            console.log(e)
-        })
+            })
     }
 
     const onClickEditHandler = () => {
@@ -102,7 +100,7 @@ export const ShoppingList = ({}) => {
 
                     <Modal isOpen={isEditShoppingListModalOpen}
                            onClose={() => setIsEditShoppingListModalOpen(false)}
-                           title={"Create new shopping list"}>
+                           title={"Edit Shopping List"}>
                         <ShoppingListForm request={editShoppingListRequest} shoppingList={shoppingList}/>
                     </Modal>
                 </div>
