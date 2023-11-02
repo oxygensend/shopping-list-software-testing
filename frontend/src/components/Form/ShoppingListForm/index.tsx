@@ -43,7 +43,7 @@ export const ShoppingListForm = ({request, shoppingList}: ShoppingListFormProps)
                 if (shoppingList) {
                     reset({
                         name: shoppingList.name,
-                        dateOfExecution: shoppingList.dateOfExecution,
+                        dateOfExecution: new Date(shoppingList.dateOfExecution.toString()),
                         products: shoppingList.products,
                         completed: shoppingList.completed
                     });
@@ -56,7 +56,6 @@ export const ShoppingListForm = ({request, shoppingList}: ShoppingListFormProps)
                     setProductComponents(components);
                 }
             })
-
     }, []);
 
     const onSubmit = async (body: FormValues) => {
@@ -84,7 +83,13 @@ export const ShoppingListForm = ({request, shoppingList}: ShoppingListFormProps)
             createProductComponent(index)]
         );
     }
-
+    const removeProduct = (index: number) => {
+        productComponents.splice(index, 1);
+        setProductComponents([...productComponents])
+        console.log(newProducts, productComponents)
+        newProducts.splice(index, 1);
+        setNewProducts([...newProducts])
+    }
     const createProductComponent = (index: number, productName?: string, productQuantity?: number, productGrammar?: string, grammars?: string[]) => {
         console.log(grammarNames);
         return <ProductForm
@@ -102,9 +107,12 @@ export const ShoppingListForm = ({request, shoppingList}: ShoppingListFormProps)
     }
 
     const removeLastProductForm = () => {
+        console.log(newProducts)
         const components = [...productComponents];
         components.pop();
         setProductComponents(components);
+        newProducts.pop();
+        setNewProducts([...newProducts]);
     }
     const saveProduct = (index: number, product: string | null, quantity: number, grammar: string) => {
 
@@ -117,11 +125,8 @@ export const ShoppingListForm = ({request, shoppingList}: ShoppingListFormProps)
         setNewProducts([...newProducts]);
     }
 
-    const removeProduct = (index: number) => {
-        newProducts.splice(index, 1);
-        productComponents.splice(index, 2);
-        setProductComponents([...productComponents])
-    }
+
+
 
     return (
         <form
@@ -189,7 +194,7 @@ export const ShoppingListForm = ({request, shoppingList}: ShoppingListFormProps)
             }
             {
                 findPropertyViolation(errors, 'products[0].name') &&
-                <ErrorComponent error={findPropertyViolation(errors, 'products') as string}/>
+                <ErrorComponent error={findPropertyViolation(errors, 'products[0].name') as string}/>
             }
             {
                 findPropertyViolation(errors, 'products[0].quantity') &&

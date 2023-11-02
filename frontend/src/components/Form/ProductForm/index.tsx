@@ -79,6 +79,7 @@ export const ProductForm = ({
     return (
         <div className={`relative flex flex-row gap-2 mr-4`}>
             <input
+                name={'product'}
                 className={`py-2.5 px-0  bg-transparent w-3/5 border-0 border-b-2 appearance-none text-gray-400 disabled:text-amber-50 border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer`}
                 type='text'
                 placeholder={'Product'}
@@ -97,6 +98,7 @@ export const ProductForm = ({
                 }) : null}
             </ul>
             <input
+                name={'quantity'}
                 className={`py-2.5 px-0  bg-transparent w-1/6 border-0 border-b-2 appearance-none text-gray-400 disabled:text-amber-50 border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer`}
                 placeholder={'Quantity'}
                 type='number'
@@ -105,7 +107,7 @@ export const ProductForm = ({
                 onChange={onChangeQuantityHandler}
             />
             <select
-
+                name={'grammar'}
                 value={grammar}
                 onChange={onChangeGrammarHandler}
                 className={`py-2.5 px-0  bg-transparent w-1/6 border-0 border-b-2 appearance-none text-gray-400 border-gray-700  disabled:text-amber-50 focus:outline-none focus:ring-0 focus:border-gray-200 peer`}

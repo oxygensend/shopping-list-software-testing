@@ -9,7 +9,7 @@ export const Navbar = ({}) => {
     }
 
     return (
-        <div className={"w-full bg-blue-600 h-16 flex flex-row fixed top-0 justify-between"}>
+        <nav className={"w-full bg-blue-600 h-16 flex flex-row fixed top-0 justify-between"}>
 
             <div className={"flex flex-row gap-10 mt-4 ml-10"}>
                 <a href={'/'} className={"text-white hover:text-gray-400 no-underline"}>Main page</a>
@@ -25,6 +25,6 @@ export const Navbar = ({}) => {
                 :
                 <div></div>
             }
-        </div>
+        </nav>
     )
 }

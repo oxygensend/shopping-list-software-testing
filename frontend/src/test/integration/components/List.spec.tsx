@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { ShoppingListPreview } from '../../types';
+import {ShoppingListPreview} from "../../../types";
 import {List} from "../../../components/List";
 
 describe('List Component', () => {

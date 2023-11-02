@@ -6,7 +6,7 @@ type ProductsListProps = {
 export const ProductsList = ({products}: ProductsListProps) => {
 
     return (
-        <table className={"table-auto text-white-50 text-sm text-left text-gray-500 dark:text-gray-400 w-full"}>
+        <table className={"product-list table-auto text-white-50 text-sm text-left text-gray-500 dark:text-gray-400 w-full"}>
             <thead className="text-xs uppercase bg-yellow-500 text-gray-700 sm:rounded-lg">
             <tr>
                 <th className={"px-6 py-3"}>Product</th>

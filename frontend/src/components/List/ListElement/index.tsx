@@ -13,6 +13,7 @@ export const ListElement = ({id, title, completed}: ListElementProps) => {
     return (
         <div
             data-testid={"list-element"}
+            id={id}
             className={"relative flex flex-row justify-center bg-yellow-400 hover:bg-yellow-300 w-full p-3 rounded-md align-middle border-b-black cursor-pointer"}
             onClick={() => onClickEventHandler()}>
             <p className={"text-xl"}>{title}</p>
