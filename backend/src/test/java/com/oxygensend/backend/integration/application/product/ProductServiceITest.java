@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Sql(scripts = "classpath:data/products.sql")
+@Sql(scripts = "classpath:data/clear_db.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class ProductServiceITest extends BaseITest {
 
 

@@ -6,11 +6,11 @@ import com.oxygensend.backend.application.auth.request.RefreshTokenRequest;
 import com.oxygensend.backend.application.auth.request.RegisterRequest;
 import com.oxygensend.backend.application.auth.jwt.TokenStorage;
 import com.oxygensend.backend.application.auth.jwt.payload.RefreshTokenPayload;
-import com.oxygensend.backend.application.exception.ApiException;
 import com.oxygensend.backend.domain.auth.TokenType;
 import com.oxygensend.backend.domain.auth.User;
 import com.oxygensend.backend.domain.auth.exception.SessionExpiredException;
 import com.oxygensend.backend.domain.auth.exception.TokenException;
+import com.oxygensend.backend.domain.auth.exception.UnauthorizedException;
 import com.oxygensend.backend.domain.auth.exception.UserAlreadyExistsException;
 import com.oxygensend.backend.infrastructure.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,13 +46,17 @@ public class AuthService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.email(),
-                        request.password()
-                )
-        );
-        return sessionManager.prepareSession((User) authentication.getPrincipal());
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.email(),
+                            request.password()
+                    )
+            );
+            return sessionManager.prepareSession((User) authentication.getPrincipal());
+        } catch (BadCredentialsException e) {
+            throw new UnauthorizedException(e.getMessage());
+        }
     }
 
     public AuthenticationResponse refreshToken(RefreshTokenRequest request) {
@@ -60,7 +64,7 @@ public class AuthService {
         var payload = getRefreshTokenPayload(request.token());
         var session = sessionManager.getSession(payload.sessionId());
         var user = userRepository.findById(session.id())
-                .orElseThrow(() -> new SessionExpiredException("User not found by session id"));
+                                 .orElseThrow(() -> new SessionExpiredException("User not found by session id"));
 
         return sessionManager.prepareSession(user);
     }

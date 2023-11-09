@@ -36,6 +36,12 @@ public class FileStorageServiceTest {
     }
 
     @Test
+    void testInit() throws IOException {
+        doThrow(new IOException("fail")).when(fileSystem).createDirectory(any(Path.class));
+        assertThrows(StorageException.class, () -> new FileStorageService("test", fileSystem));
+    }
+
+    @Test
     void testStore() throws IOException {
         // Arrange
         when(mockFile.isEmpty()).thenReturn(false);

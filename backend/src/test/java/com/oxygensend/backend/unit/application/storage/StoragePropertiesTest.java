@@ -23,4 +23,21 @@ public class StoragePropertiesTest {
         // Assert
         assertEquals("upload/shopping_list", result);
     }
+
+    @Test
+    void test_GetShoppingListLocation() {
+        // Arrange
+        StorageProperties storageProperties = new StorageProperties();
+        storageProperties.rootLocation("upload");
+        storageProperties.shoppingListLocation("shopping_list");
+
+        // Act
+        String result = storageProperties.getShoppingListLocation();
+
+        // Assert
+        assertEquals("shopping_list", result);
+    }
+
+
+
 }

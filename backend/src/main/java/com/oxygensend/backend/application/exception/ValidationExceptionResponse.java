@@ -1,8 +1,10 @@
 package com.oxygensend.backend.application.exception;
 
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class ValidationExceptionResponse implements SubExceptionResponse {
     private String field;
     private Object rejectedValue;

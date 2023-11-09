@@ -1,7 +1,7 @@
 package com.oxygensend.backend.application.exception;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@ToString
 @Getter
 public class ExceptionResponse {
     private HttpStatus status;

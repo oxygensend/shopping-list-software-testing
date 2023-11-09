@@ -74,4 +74,10 @@ public class TokenPayloadFactoryProviderTest {
         assertThrows(RuntimeException.class, () -> new TokenPayloadFactoryProvider(duplicateFactories));
     }
 
+    @Test
+    void testCreateTokenTokenNotSpecified() {
+        Claims claims = mock(Claims.class);
+        assertThrows(RuntimeException.class, () -> provider.createToken(TokenType.NOT_SPECIFIED, claims));
+
+    }
 }

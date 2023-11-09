@@ -6,6 +6,7 @@ import com.oxygensend.backend.application.auth.jwt.payload.RefreshTokenPayload;
 import com.oxygensend.backend.application.auth.jwt.payload.TokenPayload;
 import com.oxygensend.backend.config.TokenConfiguration;
 import com.oxygensend.backend.domain.auth.TokenType;
+import com.oxygensend.backend.domain.auth.exception.TokenException;
 import com.oxygensend.backend.helper.TokenHelper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -85,6 +86,38 @@ public class TokenStorageTest {
 
         // Assert
         assertEquals(expectedPayload, result);
+    }
+    @Test
+    public void testValidate_ThrowException() {
+        // Arrange
+
+        TokenType type = TokenType.REFRESH;
+        Claims claims = Jwts.claims()
+                            .subject(UUID.randomUUID().toString())
+                            .expiration(new Date(System.currentTimeMillis() + 3600))
+                            .issuedAt(new Date())
+                            .add("type", type)
+                            .build();
+
+
+        String token = Jwts.builder()
+                           .subject(claims.getSubject())
+                           .expiration(claims.getExpiration())
+                           .issuedAt(claims.getIssuedAt())
+                           .claims()
+                           .add("type", type)
+                           .and()
+                           .signWith(TokenHelper.createSigningKey())
+                           .compact();
+        TokenPayload expectedPayload = new RefreshTokenPayload(UUID.fromString(claims.getSubject()), claims.getIssuedAt(), claims.getExpiration());
+
+        when(tokenUtils.getSignInKey()).thenReturn(TokenHelper.createSigningKey());
+        when(tokenPayloadFactory.createToken(any(TokenType.class), any(Claims.class))).thenReturn(expectedPayload);
+
+
+        // Act
+        assertThrows(TokenException.class, () -> tokenStorage.validate(token, TokenType.ACCESS));
+
     }
 
 

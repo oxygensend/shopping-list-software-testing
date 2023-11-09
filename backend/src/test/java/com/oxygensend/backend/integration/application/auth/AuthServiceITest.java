@@ -6,6 +6,7 @@ import com.oxygensend.backend.application.auth.request.RegisterRequest;
 import com.oxygensend.backend.application.auth.response.AuthenticationResponse;
 import com.oxygensend.backend.config.TokenConfiguration;
 import com.oxygensend.backend.domain.auth.User;
+import com.oxygensend.backend.domain.auth.exception.UnauthorizedException;
 import com.oxygensend.backend.domain.auth.exception.UserAlreadyExistsException;
 import com.oxygensend.backend.infrastructure.auth.repository.SessionRepository;
 import com.oxygensend.backend.infrastructure.auth.repository.UserRepository;
@@ -78,7 +79,7 @@ public class AuthServiceITest extends BaseITest {
 
 
         // Act & Assert
-        assertThrows(BadCredentialsException.class, () -> authService.authenticate(request));
+        assertThrows(UnauthorizedException.class, () -> authService.authenticate(request));
     }
 
     @Test

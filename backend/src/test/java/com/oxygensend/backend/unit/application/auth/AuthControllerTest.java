@@ -6,6 +6,7 @@ import com.oxygensend.backend.application.auth.request.AuthenticationRequest;
 import com.oxygensend.backend.application.auth.request.RefreshTokenRequest;
 import com.oxygensend.backend.application.auth.request.RegisterRequest;
 import com.oxygensend.backend.application.auth.response.AuthenticationResponse;
+import com.oxygensend.backend.domain.auth.exception.UnauthorizedException;
 import com.oxygensend.backend.infrastructure.exception.ApiExceptionHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -107,7 +107,7 @@ public class AuthControllerTest {
     public void testAuthenticate_BadCredentials() throws Exception {
         // Arrange
 
-        when(authService.authenticate(any(AuthenticationRequest.class))).thenThrow(new BadCredentialsException("Bad credentials"));
+        when(authService.authenticate(any(AuthenticationRequest.class))).thenThrow(new UnauthorizedException("Bad credentials"));
 
         // Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/auth/access_token")
@@ -140,5 +140,9 @@ public class AuthControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.refreshToken").value("refreshToken"))
                 .andDo(print());
     }
+
+
+
+
 
 }

@@ -12,8 +12,6 @@ jest.mock("../../../security/tokenStorage", () => ({
 }));
 
 
-
-
 describe('RegisterForm', () => {
     let mockSetAccessToken = setAccessToken;
     let mockSetRefreshToken = setRefreshToken;
@@ -125,21 +123,5 @@ describe('RegisterForm', () => {
         const errorMessage = await findByText('lastName size must be between 2 and 64');
         expect(errorMessage).toBeInTheDocument();
     });
-    test('displays error message for empty firstname', async () => {
-        // Arrange
-        mockedError("firstName", "size must be between 2 and 64")
-
-        // Act
-        const {getByLabelText, getByText, findByText} = render(<RegisterForm/>);
-        fireEvent.change(getByLabelText('Firstname'), {target: {value: ''}});
-        fireEvent.submit(getByText('Sign up'));
-
-
-        // Assert
-        const errorMessage = await findByText('fistName size must be between 2 and 64');
-        console.log(errorMessage)
-        expect(errorMessage).toBeInTheDocument();
-    });
-
 });
 

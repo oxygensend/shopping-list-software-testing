@@ -11,6 +11,9 @@ import com.oxygensend.backend.application.auth.response.AuthenticationResponse;
 import com.oxygensend.backend.domain.auth.Session;
 import com.oxygensend.backend.domain.auth.TokenType;
 import com.oxygensend.backend.domain.auth.User;
+import com.oxygensend.backend.domain.auth.exception.SessionExpiredException;
+import com.oxygensend.backend.domain.auth.exception.TokenException;
+import com.oxygensend.backend.domain.auth.exception.UnauthorizedException;
 import com.oxygensend.backend.domain.auth.exception.UserAlreadyExistsException;
 import com.oxygensend.backend.infrastructure.auth.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -60,12 +63,12 @@ public class AuthServiceTest {
         AuthenticationRequest request = new AuthenticationRequest(email, password);
 
         var user = User.builder()
-                .id(UUID.randomUUID())
-                .firstName("John")
-                .lastName("Doe")
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .build();
+                       .id(UUID.randomUUID())
+                       .firstName("John")
+                       .lastName("Doe")
+                       .email(email)
+                       .password(passwordEncoder.encode(password))
+                       .build();
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(new UsernamePasswordAuthenticationToken(user, null, null));
         when(sessionManager.prepareSession(user)).thenReturn(new AuthenticationResponse("access_token", "refresh_token"));
@@ -88,7 +91,7 @@ public class AuthServiceTest {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenThrow(BadCredentialsException.class);
 
         // Act & Assert
-        assertThrows(BadCredentialsException.class, () -> authService.authenticate(request));
+        assertThrows(UnauthorizedException.class, () -> authService.authenticate(request));
         verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
         verifyNoMoreInteractions(sessionManager);
     }
@@ -168,6 +171,49 @@ public class AuthServiceTest {
         verify(userRepository, times(1)).findById(id);
         verify(sessionManager, times(1)).getSession(id);
         verify(sessionManager, times(1)).prepareSession(any(User.class));
+
+    }
+
+    @Test
+    public void test_RefreshToken_SessionNotFoundException() {
+
+        // Arrange
+        RefreshTokenRequest request = new RefreshTokenRequest("refresh_token");
+
+        var id = UUID.randomUUID();
+        RefreshTokenPayload refreshTokenPayload = new RefreshTokenPayload(
+                id,
+                new Date(),
+                new Date(System.currentTimeMillis() + 1000)
+        );
+        Session session = new Session(id);
+
+        when(tokenStorage.validate(anyString(), any(TokenType.class))).thenReturn(refreshTokenPayload);
+        when(sessionManager.getSession(id)).thenReturn(session);
+        when(userRepository.findById(id)).thenReturn(Optional.empty());
+
+        // Act
+        assertThrows(SessionExpiredException.class, () -> authService.refreshToken(request));
+
+    }
+
+    @Test
+    public void test_RefreshToken_TokenExpired() {
+
+        // Arrange
+        RefreshTokenRequest request = new RefreshTokenRequest("refresh_token");
+
+        var id = UUID.randomUUID();
+        RefreshTokenPayload refreshTokenPayload = new RefreshTokenPayload(
+                id,
+                new Date(),
+                new Date()
+        );
+
+        when(tokenStorage.validate(anyString(), any(TokenType.class))).thenReturn(refreshTokenPayload);
+
+        // Act
+        assertThrows(TokenException.class, () -> authService.refreshToken(request));
 
     }
 
