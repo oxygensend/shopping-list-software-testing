@@ -57,29 +57,6 @@ describe('LoginForm', () => {
         });
     });
 
-    test('displays error message for invalid credentials', async () => {
-        // Arrange
-        mockedAxios.post.mockRejectedValueOnce({
-            response: {
-                status: 401,
-                data: {
-                    message: 'Invalid credentials',
-                },
-            },
-        });
-
-        // Act
-        const {getByLabelText, getByText, findByText} = render(<LoginForm/>);
-
-        fireEvent.change(getByLabelText('Email'), {target: {value: 'test@example.com'}});
-        fireEvent.change(getByLabelText('Password'), {target: {value: 'wrongpassword'}});
-        fireEvent.submit(getByText('Sign in'));
-
-        // Assert
-        const errorMessage = await findByText('Invalid credentials');
-        expect(errorMessage).toBeInTheDocument();
-    });
-
     it('should display error message on failed login attempt', async () => {
         const errorMessage = 'Invalid credentials';
         const axiosPostSpy = jest.spyOn(axios, 'post').mockRejectedValueOnce({

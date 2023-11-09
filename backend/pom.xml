@@ -141,6 +141,26 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>clean-test</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>./mvnw</executable>
+							<arguments>
+								<argument>clean</argument>
+								<argument>test</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
 		</plugins>
 	</build>
